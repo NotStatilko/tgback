@@ -1,0 +1,2 @@
+Telethon==1.9.0
+NonCipher==5.1
