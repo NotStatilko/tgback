@@ -24,9 +24,7 @@ For first you need to create your own application.
 
 1) Go to **https://my.telegram.org** and enter your number there, after, enter the verification string that Telegram will send you.
 2) Select **API Development Tools**. You will be taken to the tab of your application.
-   Please note that the **API ID and the API Hash are secret and shouldn't be shown to anyone**.
-   In the future, these two options will allow **FULL** access to your account.
-   More about this below.
+Please note that the **API ID and the API Hash are secret and shouldn't be shown to anyone**. In the future, these two options will allow **FULL** access to your account. More about this below.
 
 3) Run `tgback.exe` or the `tgback.py` file and select **1 section**
 4) **Enter** your **API ID** and **API Hash** and follow the instructions.
