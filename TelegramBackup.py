@@ -9,63 +9,75 @@ from tgback import (
     TelegramAccount, check_app, restore
 )
 
-def os_system(arg):
-    os_system_(arg)
+
+def clear_terminal():
+    os_system_('cls || clear')
     print('\n' * 100)
+
 
 async def main():
     try:
-        os_system('cls || clear')
+        clear_terminal()
         while True:
-            print(''' - TelegramBackup 1.0 -\n\n'''
-                  '''> 1) Backup Telegram\n'''
+            print(''' - TelegramBackup 1.1 -\n\n'''
+                  '''> 1) Backup Telegram account\n'''
                   '''>> 2) Change phone number\n'''
-                  '''>>> 3) Decrypt .tgback file\n'''
-                  '''>>>> 4) Exit from Telegram Backup'''
+                  '''>>> 3) Decrypt .tgback backup\n'''
+                  '''>>>> 4) Exit from TelegramBackup'''
+                  '''\n\n% Press Ctrl+C in any mode for returning to this page'''
             )
             selected_section = input('\n@ Input: ')
             if selected_section in list('1234'):
                 break
-            os_system('cls || clear')
+            clear_terminal()
 
         while True:
-            os_system('cls || clear')
+            clear_terminal()
             if selected_section == '1':
                 api_id = input('> API ID: ')
-                api_hash = input('>> API HASH: ')
-                phone = input('>>> Phone number: ')
+                clear_terminal()
+                api_hash = input('>> API Hash: ')
+                clear_terminal()
+                phone = input('>>> Phone Number: ')
 
                 try:
-                    os_system('cls || clear')
+                    clear_terminal()
+                    print('@ Checking for correctness...')
                     account = TelegramAccount(
                         api_id, api_hash, phone
                     )
                     await account.connect()
+                    clear_terminal()
+                    print('@ Requesting confirmation code...')
                     await account.request_code()
+                    clear_terminal()
 
                     code = input('> Confirmation Code: ')
                     password = input('>> Your Telegram password: ')
-
+                    clear_terminal()
+                    
+                    print('@ Trying to login...')
                     try:
                         await account.login(password,code)
-                        os_system('cls || clear')
+                        clear_terminal()
 
                         tgback_filename = input('> Backup filename: ')
                         tgback_password = input('>> Backup password: ')
 
-                        os_system('cls || clear')
+                        clear_terminal()
                         print('@ Backup password generating, please wait...')
 
                         file = account.backup(tgback_password, tgback_filename)
                         input('@ Successfully backuped and encrypted! ({0})'.format(file))
                         await main()
+                    except (KeyboardInterrupt, EOFError):
+                        await main()
                     except:
                         input('\n@: ! Invalid password or code. Try again.')
 
                 except:
-                    input('''\n\n@: ! App Invalid! Note that API ID '''
-                          '''and API HASH just don't appear in the terminal. '''
-                          '''Copy and paste from the site https://my.telegram.org'''
+                    input('''\n\n@: ! App Invalid! Copy and paste from the '''
+                          '''site my.telegram.org. Help: bit.ly/tgback'''
                     )
             elif selected_section == '2':
                 input('@ Work in Progress. Check out bit.ly/tgback for updates.')
@@ -76,7 +88,7 @@ async def main():
                 if os.path.exists(path_to_backup):
                     tgback_password = input('>> Password for .tgback file: ')
 
-                    os_system('cls || clear')
+                    clear_terminal()
                     print('@ Backup password generating, please wait...')
 
                     name = os.path.split(path_to_backup)[1].split('.tgback')[0]
@@ -87,14 +99,14 @@ async def main():
                     else:
                         with open(name + '.dtgback','w') as f:
                             f.write(' '.join(restored))
-                        input('@ Successfully decrypted! ({0})'.format(name + 'dtgback'))
+                        input('@ Successfully decrypted! ({0})'.format(name + '.dtgback'))
                         await main()
                 else:
-                    input('\n@: ! Can\'t find .tgback file. Please check your path')
+                    input('\n@: ! Can\'t open .tgback file. Please check your path.')
 
             elif selected_section == '4':
                 exit()
-
+                                        
     except (KeyboardInterrupt, EOFError):
         await main()
 
