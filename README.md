@@ -13,7 +13,7 @@ The **.tgback** backup file is encrypted using [**NCv5.1**](https://github.com/N
 **Your backup is not transferred anywhere.**
 
 # <h2> Installation
-You can clone this repository via `git`
+You can clone this repository via `git` and run `TelegramBackup.py`
 ```
 git clone https://github.com/NotStatilko/tgback
 ```
