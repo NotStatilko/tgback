@@ -13,7 +13,7 @@ The **.tgback** backup file is encrypted using [**NCv5.1**](https://github.com/N
 **Your backup is not transferred anywhere.**
 
 # <h2> Installation
-You can clone this repository via `git` and run `TelegramBackup.py`
+You can clone this repository via `git` and run `TelegramBackup(.py | .exe)`
 ```
 git clone https://github.com/NotStatilko/tgback
 ```
@@ -26,7 +26,7 @@ For first you need to create your own application.
 2) Select **API Development Tools**. You will be taken to the tab of your application.
 Please note that the **API ID and the API Hash are secret and shouldn't be shown to anyone**. In the future, these two options will allow **FULL** access to your account. More about this below.
 
-3) Run `tgback.exe` or the `tgback.py` file and select **1 section**
+3) Run `TelegramBackup.exe` or the `TelegramBackup.py` file and select **1 section**
 4) **Enter** your **API ID** and **API Hash** and follow the instructions.
 
 After all these operations, you will receive a `.tgback` file. This is your backup file. Session file `.session` can be deleted.
