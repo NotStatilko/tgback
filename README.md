@@ -31,7 +31,7 @@ Please note that the **API ID and the API Hash are secret and shouldn't be shown
 
 After all these operations, you will receive a `.tgback` file. This is your backup file. The `.session` file should automatically be deleted; if this file remains, **be sure to delete it**.
 
-**If you accidentally declassified your API ID and API Hash, go to Active Sessions and terminate your application session.**
+**If you accidentally declassified your decrypted backup, go to Active Sessions and terminate your application session.**
 `Settings -> Privacy and Security -> Active Sessions`. **Your application should not be active since backup**, periodically
 check it out. If you see something suspicious - **immediately disconnect the session**. After disconnecting, your account will not be
 access even if the attacker has the secret parameters of your application.
