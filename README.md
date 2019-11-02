@@ -8,7 +8,7 @@ you **can’t get access to your Telegram in any way**.
 TelegramBackup(tgback) **creates an endless session of your application** through which in an emergency **you can**
 will **change your phone number**, and access your account.
 
-The **.tgback** backup file is encrypted using [**NCv5.1**](https://github.com/NotStatilko/NonCipher)(but you can optionally encrypt as you like) and weighs **only 60 bytes**. You can easily **save** your backup **as a QR** code and print it on paper.
+The **.tgback** backup file is encrypted using [**NCv5.1**](https://github.com/NotStatilko/NonCipher)(but you can optionally encrypt as you like) and weighs **only 1 kilobyte**. You can easily **save** your backup **as a QR** code and print it on paper.
 
 **Your backup is not transferred anywhere.**
 
@@ -18,7 +18,7 @@ You can clone this repository via `git` and run `TelegramBackup(.py | .exe)`
 git clone https://github.com/NotStatilko/tgback
 ```
 Or download `.exe` file direct from my official [**TelegramBackup Channel**](https://t.me/nontgback)
-# <h2> Ok, how to?
+# <h2> Ok, how to backup?
   
 For first you need to create your own application.
 
@@ -29,7 +29,7 @@ Please note that the **API ID and the API Hash are secret and shouldn't be shown
 3) Run `TelegramBackup.exe` or the `TelegramBackup.py` file and select **1 section**
 4) **Enter** your **API ID** and **API Hash** and follow the instructions.
 
-After all these operations, you will receive a `.tgback` file. This is your backup file. Session file `.session` can be deleted.
+After all these operations, you will receive a `.tgback` file. This is your backup file. The `.session` file should automatically be deleted; if this file remains, **be sure to delete it**.
 
 **If you accidentally declassified your API ID and API Hash, go to Active Sessions and terminate your application session.**
 `Settings -> Privacy and Security -> Active Sessions`. **Your application should not be active since backup**, periodically
