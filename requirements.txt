@@ -1,3 +1,2 @@
-Telethon==1.9.0
-
-NonCipher==5.1
+Telethon==1.13.0
+pyaes==1.6.1
