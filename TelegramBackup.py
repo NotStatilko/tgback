@@ -189,7 +189,7 @@ async def main():
                             clear_terminal()
                             return_to_page = False
                             print(
-                                f'''% Hello, {restored[5] + restored[7]}! (id{restored[6]})\n\n'''
+                                f'''% Hello, {restored[5] + ' ' + restored[7]}! (id{restored[6]})\n\n'''
                                 f'''@ Backup valid until {ctime(float(restored[4]))}\n'''
                                 f'''@ API ID / API Hash: {restored[0][:4]}... / {restored[1][:4]}...\n\n'''
                                 f'''> 1) Change account phone number\n'''
