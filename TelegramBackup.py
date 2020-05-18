@@ -30,64 +30,140 @@ async def main():
             selected_section = input('\n@ Input: ')
             if selected_section in '123':
                 break                      
-
+        
+        return_to_main = False
         while True:
-            clear_terminal()
-            if selected_section == '1':
-                api_id = getpass('> API ID (hidden input): ')
-                clear_terminal()
-                api_hash = getpass('>> API Hash: ')
-                clear_terminal()
-                phone = input('>>> Phone number: ')
-                try:
+            if return_to_main:
+                await main()
+                
+            clear_terminal()           
+            if selected_section == '1':               
+                while True:                    
                     clear_terminal()
-                    print('@ Checking for correctness...')
-                    account = TelegramAccount(
-                        api_id, api_hash, phone
+                    print(
+                        '''> 1) Manual input\n'''
+                        '''>> 2) Load config file\n'''
+                        '''>>> 3) Return to main page\n'''
                     )
-                    await account.connect()
-                    clear_terminal()
-                    print('@ Requesting confirmation code...')
-                    await account.request_code()
-                    clear_terminal()
-
-                    code = input('> Confirmation Code: ')
-                    password = getpass('>> Your Telegram password: ')
-                    clear_terminal()
-
-                    print('@ Trying to login...')
-                    try:
-                        await account.login(password,code)
+                    selected_section = input('@ Input: ')
+                    if selected_section == '1':                   
+                        api_id = getpass('> API ID (hidden input): ')
                         clear_terminal()
-
-                        tgback_filename = input('> Backup filename: ')
-                        tgback_password = getpass('>> Backup password: ')
-
+                        api_hash = getpass('>> API Hash: ')
                         clear_terminal()
-                        print('@ Backup password generating, please wait...')
-
-                        filename = await account.backup(tgback_password, tgback_filename)
+                        phone = input('>>> Phone number: ')
+                        try:
+                            clear_terminal()
+                            print('@ Checking for correctness...')
+                            account = TelegramAccount(
+                                api_id, api_hash, phone
+                            )
+                            await account.connect()
+                            clear_terminal()
+                            print('@ Requesting confirmation code...')
+                            await account.request_code()
+                            clear_terminal()
+        
+                            code = input('> Confirmation Code: ')
+                            password = getpass('>> Your Telegram password: ')
+                            clear_terminal()
+        
+                            print('@ Trying to login...')
+                            try:
+                                await account.login(password,code)
+                                clear_terminal()
+        
+                                tgback_filename = input('> Backup filename: ')
+                                tgback_password = getpass('>> Backup password: ')
+        
+                                clear_terminal()
+                                print('@ Backup password generating, please wait...')
+        
+                                filename = await account.backup(tgback_password, tgback_filename)
+                                clear_terminal()
+                                
+                                input(f'@ Successfully backuped and encrypted! ({filename})')
+                                await main()
+        
+                            except (KeyboardInterrupt, EOFError):
+                                await main()
+                            except:
+                                input('\n@: ! Incorrect password or code. Try again.')
+        
+                        except FloodWaitError as e:
+                            clear_terminal()
+                            input('''@: ! Telegram servers return FloodWaitError. '''
+                                f'''Please wait {e.seconds} seconds ''')
+                            await main()
+                        except:
+                            clear_terminal()
+                            input('''@: ! App Invalid! Copy and paste from the '''
+                                  '''site my.telegram.org. Help: bit.ly/tgback '''
+                            )             
+                    elif selected_section == '2': # Config file
                         clear_terminal()
-                        
-                        input(f'@ Successfully backuped and encrypted! ({filename})')
-                        await main()
-
-                    except (KeyboardInterrupt, EOFError):
-                        await main()
-                    except:
-                        input('\n@: ! Incorrect password or code. Try again.')
-
-                except FloodWaitError as e:
-                    clear_terminal()
-                    input('''@: ! Telegram servers return FloodWaitError. '''
-                        f'''Please wait {e.seconds} seconds ''')
-                    await main()
-                except:
-                    clear_terminal()
-                    input('''@: ! App Invalid! Copy and paste from the '''
-                          '''site my.telegram.org. Help: bit.ly/tgback '''
-                    )                
-            elif selected_section == '2':
+                        config = input('> Path to tgback-config file: ')
+                        if not os.path.exists(config):
+                            input('@: ! Can\'t open config file. Check your path. ')                            
+                        else:
+                            config_template = (
+                                '''api_id; api_hash; phone_number; '''
+                                '''telegram_password; backup_password; backup_filename'''
+                            )
+                            try:
+                                config = open(config).read()                              
+                                if '"' in config: # Invalid format but ok. I try to predict it :)
+                                    config = config.replace('"','')
+                                                                                                    
+                                config = config.split('; ')
+                                assert len(config) == 6                          
+                            except:                                
+                                clear_terminal()
+                                input(
+                                     '''@: ! It\'s not a tgback-config file\n\n'''
+                                    f'''@: ? Correct format: "{config_template}" '''
+                                )
+                            try:
+                                clear_terminal()                              
+                                print('@ Checking for correctness...')
+                                account = TelegramAccount(
+                                    config[0], config[1], config[2]
+                                )
+                                await account.connect()
+                                clear_terminal()
+                                print('@ Requesting confirmation code...')
+                                await account.request_code()
+                                clear_terminal()
+                                
+                                try:
+                                    code = input('> Confirmation Code: ')
+                                    clear_terminal()
+                                    print('@ Trying to login...')
+                                    await account.login(config[3],code)
+                                except:
+                                    clear_terminal()
+                                    input('@: ! Invalid code. Try again. ')
+                                else:                                                                       
+                                    clear_terminal()
+                                    print('@ Backup password generating, please wait...')
+                
+                                    filename = await account.backup(config[4], config[5])
+                                    clear_terminal()
+                                        
+                                    input(f'@ Successfully backuped and encrypted! ({filename})')
+                                    return_to_main = True
+                                    break
+                                
+                            except:
+                                clear_terminal()
+                                input(
+                                     '''@: ! Something wrong in your config file.\n\n'''
+                                    f'''@: ? Correct format: "{config_template}" '''
+                                )
+                    elif selected_section == '3':
+                        await main()             
+                                                     
+            elif selected_section == '2': # Open .etgback
                 clear_terminal()
                 path_to_tgback = input('> Path to .etgback file: ')
                 if not os.path.exists(path_to_tgback):
@@ -167,7 +243,7 @@ async def main():
                 await main()
             
     except (KeyboardInterrupt, EOFError): await main()        
-    except SystemExit: raise SystemExit    
+    except SystemExit: raise quit()  
     except Exception as e:
         clear_terminal()
         print_exc(file=open('tgback.log','a'))       
