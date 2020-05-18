@@ -1,5 +1,8 @@
 # <h1> Telegram Backup
 
+[**Go to English version**](https://github.com/NotStatilko/tgback/blob/master/READMEen.md) (outdated now)
+
+
 **tgback** — программа для создания бэкапов ваших [**Telegram**](https://telegram.org) аккаунтов.
 
 Telegram запрещает вход в аккаунт без подтверждения по номеру телефона. Если Вы потеряете к нему доступ – **потеряете и аккаунт**.
