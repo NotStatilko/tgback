@@ -12,14 +12,14 @@ from telethon.errors.rpcbaseerrors import AuthKeyError
 
 from tgback_utils import TelegramAccount, restore
 
+
 def clear_terminal():
     os_system_('cls || clear'); print('\n' * 35)
-    
 
 async def main():
     try:
-        clear_terminal()
-        while True:                   
+        while True:
+            clear_terminal()
             print(
                 ''' - TelegramBackup 3.0 -\n\n'''
                 '''> 1) Backup Telegram account\n'''
@@ -29,16 +29,16 @@ async def main():
             )
             selected_section = input('\n@ Input: ')
             if selected_section in '123':
-                break                      
-        
+                break
+
         return_to_main = False
         while True:
             if return_to_main:
                 await main()
-                
-            clear_terminal()           
-            if selected_section == '1':               
-                while True:                    
+
+            clear_terminal()
+            if selected_section == '1':
+                while True:
                     clear_terminal()
                     print(
                         '''> 1) Manual input\n'''
@@ -46,7 +46,7 @@ async def main():
                         '''>>> 3) Return to main page\n'''
                     )
                     selected_section = input('@ Input: ')
-                    if selected_section == '1':                   
+                    if selected_section == '1':
                         api_id = getpass('> API ID (hidden input): ')
                         clear_terminal()
                         api_hash = getpass('>> API Hash: ')
@@ -63,33 +63,33 @@ async def main():
                             print('@ Requesting confirmation code...')
                             await account.request_code()
                             clear_terminal()
-        
+
                             code = input('> Confirmation Code: ')
                             password = getpass('>> Your Telegram password: ')
                             clear_terminal()
-        
+
                             print('@ Trying to login...')
                             try:
                                 await account.login(password,code)
                                 clear_terminal()
-        
+
                                 tgback_filename = input('> Backup filename: ')
                                 tgback_password = getpass('>> Backup password: ')
-        
+
                                 clear_terminal()
                                 print('@ Backup password generating, please wait...')
-        
+
                                 filename = await account.backup(tgback_password, tgback_filename)
                                 clear_terminal()
-                                
+
                                 input(f'@ Successfully backuped and encrypted! ({filename})')
                                 await main()
-        
+
                             except (KeyboardInterrupt, EOFError):
                                 await main()
                             except:
                                 input('\n@: ! Incorrect password or code. Try again.')
-        
+
                         except FloodWaitError as e:
                             clear_terminal()
                             input('''@: ! Telegram servers return FloodWaitError. '''
@@ -99,32 +99,32 @@ async def main():
                             clear_terminal()
                             input('''@: ! App Invalid! Copy and paste from the '''
                                   '''site my.telegram.org. Help: bit.ly/tgback '''
-                            )             
+                            )
                     elif selected_section == '2': # Config file
                         clear_terminal()
                         config = input('> Path to tgback-config file: ')
                         if not os.path.exists(config):
-                            input('@: ! Can\'t open config file. Check your path. ')                            
+                            input('@: ! Can\'t open config file. Check your path. ')
                         else:
                             config_template = (
                                 '''api_id; api_hash; phone_number; '''
                                 '''telegram_password; backup_password; backup_filename'''
                             )
                             try:
-                                config = open(config).read()                              
+                                config = open(config).read()
                                 if '"' in config: # Invalid format but ok. I try to predict it :)
                                     config = config.replace('"','')
-                                                                                                    
+
                                 config = config.split('; ')
-                                assert len(config) == 6                          
-                            except:                                
+                                assert len(config) == 6
+                            except:
                                 clear_terminal()
                                 input(
                                      '''@: ! It\'s not a tgback-config file\n\n'''
                                     f'''@: ? Correct format: "{config_template}" '''
                                 )
                             try:
-                                clear_terminal()                              
+                                clear_terminal()
                                 print('@ Checking for correctness...')
                                 account = TelegramAccount(
                                     config[0], config[1], config[2]
@@ -134,7 +134,7 @@ async def main():
                                 print('@ Requesting confirmation code...')
                                 await account.request_code()
                                 clear_terminal()
-                                
+
                                 try:
                                     code = input('> Confirmation Code: ')
                                     clear_terminal()
@@ -143,17 +143,17 @@ async def main():
                                 except:
                                     clear_terminal()
                                     input('@: ! Invalid code. Try again. ')
-                                else:                                                                       
+                                else:
                                     clear_terminal()
                                     print('@ Backup password generating, please wait...')
-                
+
                                     filename = await account.backup(config[4], config[5])
                                     clear_terminal()
-                                        
+
                                     input(f'@ Successfully backuped and encrypted! ({filename})')
                                     return_to_main = True
                                     break
-                                
+
                             except:
                                 clear_terminal()
                                 input(
@@ -161,8 +161,8 @@ async def main():
                                     f'''@: ? Correct format: "{config_template}" '''
                                 )
                     elif selected_section == '3':
-                        await main()             
-                                                     
+                        await main()
+
             elif selected_section == '2': # Open .etgback
                 clear_terminal()
                 path_to_tgback = input('> Path to .etgback file: ')
@@ -176,9 +176,9 @@ async def main():
                     try:
                         restored = restore(path_to_tgback, tgback_password)
                         assert len(restored) == 8
-                    except:                        
-                        clear_terminal()                       
-                        input('\n@: ! Incorrect Password. ')
+                    except:
+                        clear_terminal()
+                        input('\n@: ! Incorrect Password or corrupted backup. ')
                         await main()
                     else:
                         account = TelegramAccount(
@@ -191,14 +191,14 @@ async def main():
                             print(
                                 f'''% Hello, {restored[5] + restored[7]}! (id{restored[6]})\n\n'''
                                 f'''@ Backup valid until {ctime(float(restored[4]))}\n'''
-                                f'''@ API ID / API Hash: {restored[0][:4]}... / {restored[1][:4]}...\n\n'''                                                                                               
+                                f'''@ API ID / API Hash: {restored[0][:4]}... / {restored[1][:4]}...\n\n'''
                                 f'''> 1) Change account phone number\n'''
                                 f'''>> 2) Refresh .etgback backup\n'''
                                 f'''>>> 3) Return to main page'''
-                            )                            
-                            selected_section = input('\n@ Input: ')                                                                                                                                   
-                            if selected_section == '1':                  
-                                clear_terminal()                                                              
+                            )
+                            selected_section = input('\n@ Input: ')
+                            if selected_section == '1':
+                                clear_terminal()
                                 while True:
                                     clear_terminal()
                                     new_phone = input('> Enter your new phone number: ')
@@ -207,14 +207,14 @@ async def main():
                                     except AuthKeyError:
                                         return_to_page = True
                                         input('\n@: ! Can\'t change phone number now. Please, wait some time.')
-                                        break                                        
-                                    except:                                       
+                                        break
+                                    except:
                                         input('\n@: ! Number is invalid or already in use. ')
                                     else:
                                         break
-                                
+
                                 if not return_to_page:
-                                    while True:                                    
+                                    while True:
                                         clear_terminal()
                                         print('>> Confirmation code has been sent to ' + new_phone)
                                         code = input('@ >> Code: ')
@@ -223,30 +223,30 @@ async def main():
                                         except:
                                             input('\n@: ! Invalid code. Try again or hit Ctrl+C. ')
                                         else: break
-            
-                                    clear_terminal()                                          
+
+                                    clear_terminal()
                                     input('''@: Your phone has been successfully changed! '''
                                         f'''Now you can login to your Telegram account with phone {new_phone}!''')
                                     await main()
-                            
+
                             elif selected_section == '2':
                                 await account.refresh_backup(restored, path_to_tgback)
                                 clear_terminal()
                                 input('@ Successfully refreshed! | ')
-                                
+
                             elif selected_section == '3':
                                 await main()
-                                
+
             elif selected_section == '3':
                 raise SystemExit
             else:
                 await main()
-            
-    except (KeyboardInterrupt, EOFError): await main()        
-    except SystemExit: raise quit()  
+
+    except (KeyboardInterrupt, EOFError): await main()
+    except SystemExit: quit()
     except Exception as e:
         clear_terminal()
-        print_exc(file=open('tgback.log','a'))       
+        print_exc(file=open('tgback.log','a'))
         print(
             f'''@: ! Oops, something went wrong! Unknown error was '''
             '''written to the "tgback.log" file, so please, '''
