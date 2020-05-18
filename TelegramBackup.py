@@ -243,7 +243,7 @@ async def main():
                 await main()
 
     except (KeyboardInterrupt, EOFError): await main()
-    except SystemExit: quit()
+    except SystemExit: raise SystemExit
     except Exception as e:
         clear_terminal()
         print_exc(file=open('tgback.log','a'))
