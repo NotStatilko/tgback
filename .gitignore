@@ -108,3 +108,4 @@ venv.bak/
 .tgback
 .dtgback
 .session
+.config
