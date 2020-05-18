@@ -1,39 +1,56 @@
 # <h1> Telegram Backup
 
-**tgback** is a program for backing up your [**Telegram**](https://telegram.org) account.
+[**Go to English version**](https://github.com/NotStatilko/tgback/blob/master/READMEen.md) (outdated now)
 
-Telegram allows you to restore your account **only through the phone number**, if you lose access to the number
-you **can’t get access to your Telegram in any way**.
 
-TelegramBackup(tgback) **creates an endless session of your application** through which in an emergency **you can**
-will **change your phone number**, and access your account.
+**tgback** — программа для создания бэкапов ваших [**Telegram**](https://telegram.org) аккаунтов.
 
-The **.tgback** backup file is encrypted using [**NCv5.1**](https://github.com/NotStatilko/NonCipher)(but you can optionally encrypt as you like) and weighs **only 1 kilobyte**. You can easily **save** your backup **as a QR** code and print it on paper.
+Telegram запрещает вход в аккаунт без подтверждения по номеру телефона. Если Вы потеряете к нему доступ – **потеряете и аккаунт**.
 
-**Your backup is not transferred anywhere.**
+TelegramBackup (**tgback**) создаёт **бесконечную** сессию Вашего приложения так, как если бы Вы входили в аккаунт с другого устройства.
 
-# <h2> Installation
-You can clone this repository via `git` and run `TelegramBackup(.py | .exe)`
+
+Программа "из коробки" поддерживает изменение номера телефона аккаунта через бэкап. После изменения оного через tgback Вы сможете без проблем зайти в свой аккаунт.
+
+
+Файл бэкапа (`.etgback`) шифруется Вашим паролем с помощью [**AES-256 CBC**](https://github.com/ricmoo/pyaes). Пароль предварительно пропускается через более чем 2 миллиона операций хеширования для защиты от брутфорса.
+Весь бэкап весит всего ~1 килобайт, поэтому Вы без проблем сможете его поместить даже **в QR код** и распечатать позднее.
+
+**Ваш `.etgback` файл остаётся только у Вас и никуда не передаётся**
+
+# <h2> Установка
+
+На данный момент требуется предварительное тестирование **tgback3.0**, более детально причины описаны [здесь](https://github.com/NotStatilko/tgback/issues/2). Вы можете подождать официального релиза и/или склонировать репозиторий себе на устройство и запустить `TelegramBackup.py`.
+
 ```
 git clone https://github.com/NotStatilko/tgback
+cd tgback
+pip install -r requirements.txt
+python TelegramBackup.py
 ```
-Or download `.exe` file direct from my official [**TelegramBackup Channel**](https://t.me/nontgback)
-# <h2> Ok, how to backup?
+Я **не рекомендую** использование **tgback2.0** из-за более слабого алгоритма шифрования и многих ошибок.
+
+
+# <h2> Хорошо, как создать бэкап?
   
-For first you need to create your own application.
+Для начала вам необходимо создать своё приложение.
 
-1) Go to **https://my.telegram.org** and enter your number there, after, enter the verification string that Telegram will send you.
-2) Select **API Development Tools**. You will be taken to the tab of your application.
-Please note that the **API ID and the API Hash are secret and shouldn't be shown to anyone**. In the future, these two options will allow **FULL** access to your account. More about this below.
+1) Зайдите на **https://my.telegram.org** и введите там свой номер. После, введите код, который Вам пришлёт Telegram.
+2) Выберите **API Development Tools**, вы попадёте в меню Вашего приложения. Оттуда Вам необходимо взять два параметра: `API ID`, `API Hash`.
+Пожалуйста, обратите внимание на то, что эти параметры Вы должны **держать в секрете**. После создания бэкапа возможно их удаление, так как `.etgback` файл автоматически всё сохранит и зашифрует.
 
-3) Run `TelegramBackup.exe` or the `TelegramBackup.py` file and select **1 section**
-4) **Enter** your **API ID** and **API Hash** and follow the instructions.
+3) Запустите `TelegramBackup.py` файл и выберите **1 режим**
+4) Введите/вставьте Ваш **API ID**, **API Hash** и следуйте дальшнейшим инструкциям.
 
-After all these operations, you will receive a `.tgback` file. This is your backup file. The `.session` file should automatically be deleted; if this file remains, **be sure to delete it**.
+После всех операций будет получен Ваш бэкап зашифрованный Вашим паролем. Не забывайте, что пароль должен быть сложным, так как при раскрытии бэкапа злоумышленник получит **полный** доступ над аккаунтом.
 
-**If you accidentally declassified your decrypted backup, go to Active Sessions and terminate your application session.**
-`Settings -> Privacy and Security -> Active Sessions`. **Your application should not be active since backup**, periodically
-check it out. If you see something suspicious - **immediately disconnect the session**. After disconnecting, your account will not be
-access even if the attacker has the secret parameters of your application.
+Если Вы каким-либо образом раскрыли пароль к вашему бэкапу – немедленно зайдите в раздел Активные сеансы/Девайсы и отключите сессию приложения. После этого бэкап приходит в негодность, а Вы сможете без проблем создать новый.
+Также, обратите внимание на то, что сессия бэкапа **не должна быть активной с момента его создания/обновления**. Если Вы заметили что-то подозрительное – немедленно отключайте эту сессию.
 
-**Encrypt your backup with a complex password, and everything will be ok!**
+
+# <h2> Обновление бэкапа
+
+Ранее Вы могли прочитать об "обновлении бэкапа", хотя раньше такого не требовалось. Это действительно так. Сессии отключаются через неизвестное время бездействия, поэтому их нужно поддерживать. На данный момент необходимо обновлять её каждые два месяца, но можно и чаще. 
+Для обновления бэкапа достаточно просто его открыть во втором режиме используя **tgback3.0** и выбрать `Refresh .etgback backup`. 
+
+**TelegramBackup** автоматически рассчитывает время до истечения валидности `.etgback`, отправляет Вам в _Избранное_ точные даты, и создаёт отложенное сообщение за неделю до.
