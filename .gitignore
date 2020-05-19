@@ -104,8 +104,9 @@ venv.bak/
 .mypy_cache/
 
 # tgback
-.etgback
-.tgback
-.dtgback
-.session
-.config
+*.etgback
+*.tgback
+*.dtgback
+*.session
+*.config
+*.log

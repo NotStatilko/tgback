@@ -9,6 +9,7 @@ from os import system as os_system_
 from asyncio import run as asyncio_run
 from telethon.errors import FloodWaitError
 from telethon.errors.rpcbaseerrors import AuthKeyError
+from telethon.errors.rpcerrorlist import AuthKeyUnregisteredError
 
 from tgback_utils import TelegramAccount, restore
 
@@ -21,7 +22,7 @@ async def main():
         while True:
             clear_terminal()
             print(
-                ''' - TelegramBackup 3.0 -\n\n'''
+                ''' - TelegramBackup 3.0 [beta(1.1)] -\n\n'''
                 '''> 1) Backup Telegram account\n'''
                 '''>> 2) Open .etgback backup\n'''
                 '''>>> 3) Exit from TelegramBackup'''
@@ -47,6 +48,7 @@ async def main():
                     )
                     selected_section = input('@ Input: ')
                     if selected_section == '1':
+                        clear_terminal()
                         api_id = getpass('> API ID (hidden input): ')
                         clear_terminal()
                         api_hash = getpass('>> API Hash: ')
@@ -80,14 +82,15 @@ async def main():
                                 print('@ Backup password generating, please wait...')
 
                                 filename = await account.backup(tgback_password, tgback_filename)
-                                clear_terminal()
 
+                                clear_terminal()
                                 input(f'@ Successfully backuped and encrypted! ({filename})')
                                 await main()
 
                             except (KeyboardInterrupt, EOFError):
                                 await main()
                             except:
+                                clear_terminal()
                                 input('\n@: ! Incorrect password or code. Try again.')
 
                         except FloodWaitError as e:
@@ -104,6 +107,7 @@ async def main():
                         clear_terminal()
                         config = input('> Path to tgback-config file: ')
                         if not os.path.exists(config):
+                            clear_terminal()
                             input('@: ! Can\'t open config file. Check your path. ')
                         else:
                             config_template = (
@@ -148,11 +152,10 @@ async def main():
                                     print('@ Backup password generating, please wait...')
 
                                     filename = await account.backup(config[4], config[5])
-                                    clear_terminal()
 
+                                    clear_terminal()
                                     input(f'@ Successfully backuped and encrypted! ({filename})')
-                                    return_to_main = True
-                                    break
+                                    return_to_main = True; break
 
                             except:
                                 clear_terminal()
@@ -167,6 +170,7 @@ async def main():
                 clear_terminal()
                 path_to_tgback = input('> Path to .etgback file: ')
                 if not os.path.exists(path_to_tgback):
+                    clear_terminal()
                     input('@: ! Can\'t open .etgback file. Check your path. ')
                     await main()
                 else:
@@ -206,9 +210,14 @@ async def main():
                                        code_hash = await account.request_change_phone_code(new_phone)
                                     except AuthKeyError:
                                         return_to_page = True
-                                        input('\n@: ! Can\'t change phone number now. Please, wait some time.')
-                                        break
+                                        clear_terminal()
+                                        input('\n@: ! Can\'t change phone number now. Please, wait some time.'); break
+                                    except AuthKeyUnregisteredError:
+                                        clear_terminal()
+                                        return_to_page = True
+                                        input('\n\n@: ! Backup was disconnected.'); break
                                     except:
+                                        clear_terminal()
                                         input('\n@: ! Number is invalid or already in use. ')
                                     else:
                                         break
@@ -221,6 +230,7 @@ async def main():
                                         try:
                                             await account.change_phone(code, code_hash, new_phone)
                                         except:
+                                            clear_terminal()
                                             input('\n@: ! Invalid code. Try again or hit Ctrl+C. ')
                                         else: break
 
@@ -230,9 +240,13 @@ async def main():
                                     await main()
 
                             elif selected_section == '2':
-                                await account.refresh_backup(restored, path_to_tgback)
-                                clear_terminal()
-                                input('@ Successfully refreshed! | ')
+                                try:
+                                    await account.refresh_backup(restored, path_to_tgback)
+                                    clear_terminal()
+                                    input('@ Successfully refreshed! | ')
+                                except AttributeError:
+                                    clear_terminal()
+                                    input('\n\n@: ! Backup was disconnected.')
 
                             elif selected_section == '3':
                                 await main()
