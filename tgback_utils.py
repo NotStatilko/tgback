@@ -31,7 +31,7 @@ for i in algorithms_guaranteed: # Imports all guaranteed hash_functions
 hash_functions.sort(key=repr)
 hash_functions *= 20
 
-VERSION = 'v3.0 beta(2.0)'
+VERSION = 'v3.0 beta(2.1)'
 TelegramClient.__version__ = VERSION
 
 RSC = RSCodec(222)
