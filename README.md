@@ -1,71 +1,66 @@
-# <h1> Telegram Backup
+# TelegramBackup v3.0 beta(2.0)
+######  _Don't forget to look at [changelog](https://github.com/NotStatilko/tgback/CHANGELOG.md)!_
 
-[**Go to English version**](https://github.com/NotStatilko/tgback/blob/master/READMEen.md) (outdated now)
+**TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram, you will **not be able** to log into your account if you lose access to the phone number. **Tgback** provides the ability to create an _alternative session_ (as if you were logging in from another device) and change the number on which the account is linked.
 
+**TelegramBackup** produces a special `.tgback` file as well as a QR code - both are your backup. You can choose what is more convenient for you to store, as `.tgback` and a QR code represent **the same** session. For encryption of backups, `AES-CBC-256` is used with a key in the form of your password passed through more than 2 million hash operations of various hash functions, the order of which is based on the password you set.
 
-**tgback** — программа для создания бэкапов Ваших [**Telegram**](https://telegram.org) аккаунтов.
+ ## Download and setting
+ ### Windows
+  You can download `.exe` file [**from here**](https://drive.google.com/file/d/1PKmpU5bxBAni-ZB4g070q2-I6DLLv7p3/view?usp=drivesdk). 
+ ### Linux
+  If you are outside of Windows and want to use **TelegramBackup** - you need to install all dependencies. For the program to work correctly, you need to have [Python 3.6+](https://python.org), [ZBar](http://zbar.sourceforge.net) and after that, run
+  ```bash
+  git clone https://github.com/NotStatilko/tgback
+  cd tgback
+  pip install -r requirements.txt
+  python TelegramBackup.py
+  ```
+ ## Backup creation
+  To create a backup you need to select **first mode**
 
-Telegram запрещает вход в аккаунт без подтверждения по номеру телефона. Если Вы потеряете к нему доступ – **потеряете и аккаунт**.
-
-TelegramBackup (**tgback**) создаёт **бесконечную** сессию Вашего приложения так, как если бы Вы входили в аккаунт с другого устройства.
-
-
-Программа "из коробки" поддерживает изменение номера телефона аккаунта через бэкап. После изменения оного через tgback Вы сможете без проблем зайти в свой аккаунт.
-
-
-Файл бэкапа (`.etgback`) шифруется Вашим паролем с помощью [**AES-256 CBC**](https://github.com/ricmoo/pyaes). Пароль предварительно пропускается через более чем 2 миллиона операций хеширования для защиты от брутфорса.
-Весь бэкап весит всего ~1 килобайт, поэтому Вы без проблем сможете его поместить даже **в QR код** и распечатать позднее.
-
-**Ваш `.etgback` файл остаётся только у Вас и никуда не передаётся**
-
-# <h2> Установка
-
-На данный момент требуется предварительное тестирование **tgback3.0**, более детально причины описаны [здесь](https://github.com/NotStatilko/tgback/issues/2). Вы можете подождать официального релиза и/или склонировать репозиторий себе на устройство и запустить `TelegramBackup.py` или `TelegramBackup.exe`. Последний может работать без всяких зависимостей. Также `.exe` файл доступен для скачивания в [официальном Telegram канале](https://t.me/nontgback).
-
-```
-git clone https://github.com/NotStatilko/tgback
-cd tgback
-pip install -r requirements.txt
-python TelegramBackup.py
-```
-Я **не рекомендую** использование **tgback2.0** из-за более слабого алгоритма шифрования и многих ошибок.
-
-
-# <h2> Хорошо, как создать бэкап?
+  ![main page](https://telegra.ph/file/5ba889aff30a503e32f80.png)
   
-Для начала вам необходимо создать своё приложение.
+  And choose the way you will create it.
 
-1) Зайдите на **https://my.telegram.org** и введите там свой номер. После, введите код, который Вам пришлёт Telegram.
-2) Выберите **API Development Tools**, вы попадёте в меню Вашего приложения. Оттуда Вам необходимо взять два параметра: `API ID`, `API Hash`.
-Пожалуйста, обратите внимание на то, что эти параметры Вы должны **держать в секрете**. После создания бэкапа возможно их удаление, так как `.etgback` файл автоматически всё сохранит и зашифрует.
+  ![backup](https://telegra.ph/file/0424f7419d2cb13ceffbd.png)
+  
+  You can enter everything manually, or create a special `tgback-config` file. If the first method is inconvenient for you, create a text file and fill it out using this template:
+  ```
+  phone_number; telegram_password; backup_password; backup_filename
+  ```
+  Next, you will need to enter the code that Telegram will send you. If this doesn't happen, then you can request the code again. After three attempts, Telegram will **call you** and the robot will dictate it.
 
-3) Запустите `TelegramBackup.py` или `betaTelegramBackup.exe` и выберите **1 режим**
-4) Введите/вставьте Ваш **API ID**, **API Hash** и следуйте дальшнейшим инструкциям.
+  ![request_code](https://telegra.ph/file/af75b96c5cab656ed7a89.png)
 
-После всех операций будет получен Ваш бэкап зашифрованный Вашим паролем. Не забывайте, что пароль должен быть сложным, так как при раскрытии бэкапа злоумышленник получит **полный** доступ над аккаунтом.
+After all operations, you will receive a QR code and `.tgback` file. Please **check your backups** first for validity, since TelegramBackup is still in beta phase.
 
-Если Вы каким-либо образом раскрыли пароль к вашему бэкапу – немедленно зайдите в раздел Активные сеансы/Девайсы и отключите сессию приложения. После этого бэкап приходит в негодность, а Вы сможете без проблем создать новый.
-Также, обратите внимание на то, что сессия бэкапа **не должна быть активной с момента её создания/обновления**. Если Вы заметили что-то подозрительное – немедленно **отключайте эту сессию**.
+## Backup refresh and number replacement
+ Due to recently discovered [problem](https://github.com/NotStatilko/tgback/issues/2), which prompted me to sit down for a code rewrite, backups need to be updated periodically, so that the session doesn't turn off automatically due to inactivity. At the moment once every two months. We can probably increase it to six months, but testing is needed. 
 
+**TelegramBackup** automatically creates a reminder message, so you will be notified a week before the deadline. You can refresh the backup and change the number in the mode under number **2**. After refreshing the backup, you will receive a new updated QR code and `.tgback` file. Old backups will remain working, but they will show the wrong amount of time before the expiration of the validity period.
 
-# <h2> Обновление бэкапа
+## A bit about security
+ The backups you created **shouldn't** be active since the last update. If you notice something suspicious – **immediately** disconnect your backup session. After disconnecting a session, backups that are attached to it **will be destroyed**. 
 
-Ранее Вы могли прочитать об "обновлении бэкапа", хотя раньше такого не требовалось. Это действительно так. Сессии отключаются через неизвестное время бездействия, поэтому их нужно поддерживать. На данный момент необходимо обновлять её каждые два месяца, но можно и чаще. 
-Для обновления бэкапа достаточно просто его открыть во втором режиме используя **tgback3.0** и выбрать `Refresh .etgback backup`. 
+Although TelegramBackup allows you to change only the phone number, the backups themselves store **the key to the session**, upon receipt of which the attacker will receive **FULL** control over your account. You must choose complex passwords. 
 
-**TelegramBackup** автоматически рассчитывает время до истечения валидности `.etgback`, отправляет Вам в _Избранное_ точные даты, и создаёт отложенное сообщение за неделю до.
+Also, no security audits have been conducted by competent people, so I **do not guarantee** complete cryptographic strength. If you have any comments, open issue. I am attaching a QR-backup of my account here, try to hack if you want!
 
+<img src="https://telegra.ph/file/4309aba93c6d673470e9e.png" width="200" height="200"></img>
 
-# <h2> Файлы конфигурации
+## Involved libraries
+1. [**Telethon**](https://github.com/LonamiWebs/Telethon) (MIT License)
+2. [**Pillow**](https://github.com/python-pillow/Pillow) (PIL Software License)
+3. [**PyAES**](https://github.com/ricmoo/pyaes) (MIT License)
+4. [**ReedSolomon**](https://github.com/tomerfiliba/reedsolomon) (MIT License)
+5. [**PyZBar**](https://github.com/NaturalHistoryMuseum/pyzbar) (MIT License)
+6. [**python-qrcode**](https://github.com/lincolnloop/python-qrcode) ([LICENSE](https://github.com/lincolnloop/python-qrcode/blob/master/LICENSE))
+7. [**libzbar64.dll**](https://github.com/dani4/ZBarWin64) (GNU LESSER GENERAL PUBLIC LICENSE)
+## Bitcoin
+If you somehow find this useful —
 
-В последней версии была добавлена поддержка т.н `tgback-config` файлов. Если Ваш терминал не поддерживает вставку, или Вы хотите выполнить быстрый бэкап – можете воспользоваться этим нововведением.
-Для создания `tgback-config` необходимо в пустой файл с любым расширением записать всё необходимое для **tgback3.0** в таком формате (шаблон):
+<img src="https://telegra.ph/file/fdf5512c31826ca738ba8.png" width="200" height="200"></img>
 ```
-api_id; api_hash; phone_number; telegram_password; backup_password; backup_filename
-```
-Далее его нужно просто экспортировать в режиме бэкапа аккаунтов в **tgback3.0**
-
-Пример:
-```
-159160; fad31739855c367badb4d94b08a3c374; +380000000000; my_tg_password; my_backup_password; my_backup
+1NN4AU6XrECh8WSM2joZ6tRVDcTZyTkzTi
 ```

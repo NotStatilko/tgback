@@ -1,2 +1,11 @@
-Telethon==1.13.0
+pillow==7.1.2
+
 pyaes==1.6.1
+
+reedsolo==1.5.3
+
+pyzbar==0.1.8
+
+telethon==1.14.0
+
+qrcode==6.1

@@ -110,3 +110,4 @@ venv.bak/
 *.session
 *.config
 *.log
+*.tgback.png
