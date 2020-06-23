@@ -5,7 +5,7 @@
 
 <img src="https://telegra.ph/file/d5c76ab1f117bc4bd58fa.jpg" width="" height=""></img>
 
-2. **Reed Solomon codes**. Regular backups are now additionally protected by Reed Solomon codes. If data is corrupted, they can help. Backup size now takes at least **4 kilobytes**.
+2. **Reed Solomon codes**. Regular backups are now additionally protected by [Reed Solomon codes](https://en.m.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction). If data is corrupted, they can help. Backup size now takes at least **4 kilobytes**.
 
 3. **Improved encryption**. Now IV is randomly generated and added to the ciphertext. Earlier `TgbackAES` took IV from the password, which is a [**vulnerability**](https://en.m.wikipedia.org/wiki/Initialization_vector).
 
