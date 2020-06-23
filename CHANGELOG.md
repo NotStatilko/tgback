@@ -13,7 +13,7 @@
 
 5. **Calls and codes**. Now if you don't receive the code, you can request it again. After several requests to re-send the Telegram code, they will **call you** and dictate it.
 
-6. **Refusal of users API ID and API Hash**. Previously, the user had to create and provide their own API ID and Hash API, which could be misleading. Hardcoded parameters are now used. This **does not** affect anything, but now it’s enough to provide only a phone number and password. I would ask the developers **not to use them**, but to generate their own. I advise users to download files (including the specified links) **only** from this repository and official [**Telegram Channel**](https://t.me/nontgback).
+6. **Refusal of user's API ID and API Hash**. Previously, the user had to create and provide their own API ID and Hash API, which could be misleading. Hardcoded parameters are now used. This **does not** affect anything, but now it’s enough to provide only a phone number and password. I would ask the developers **not to use them**, but to generate their own. I advise users to download files (including the specified links) **only** from this repository and official [**Telegram Channel**](https://t.me/nontgback).
 
 7. **Minor improvements of navigation and much bugfixes!**
 
