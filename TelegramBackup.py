@@ -120,7 +120,7 @@ async def main():
                                 while True:
                                     clear_terminal()
                                     tgback_filename = input('> Backup filename: ')
-                                    if tgback_filename > 32:
+                                    if len(tgback_filename) > 32:
                                         input('@: ! Backup filename is too long! (Must be < 33).')
                                         tgback_filename = input('> Backup filename: ')
                                     else:
