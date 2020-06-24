@@ -7,7 +7,7 @@
 
  ## Download and setting
  ### Windows
-  You can download `.exe` file [**from Telegram**](https://t.me/nontgback) or [**from Google Drive**](https://drive.google.com/file/d/1PKmpU5bxBAni-ZB4g070q2-I6DLLv7p3/view?usp=drivesdk). 
+  You can download `.exe` file [**from Telegram**](https://t.me/nontgback) or [**from Google Drive**](https://drive.google.com/folderview?id=1-x6Yxp3s5-SOAHTvCHdxkAsYP011jsDz). 
  ### Linux
   If you are outside of Windows and want to use **TelegramBackup** - you need to install all dependencies. For the program to work correctly, you need to have [Python 3.6+](https://python.org), [ZBar](http://zbar.sourceforge.net) and after that, run
   ```bash
