@@ -1,4 +1,4 @@
-# TelegramBackup v3.0 beta(2.0)
+# TelegramBackup v3.0 beta(2.1)
 ######  _Don't forget to look at [changelog](CHANGELOG.md)!_
 
 **TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram, you will **not be able** to log into your account if you lose access to the phone number. **Tgback** provides the ability to create an _alternative session_ (as if you were logging in from another device) and change the number on which the account is linked.
