@@ -1,4 +1,4 @@
-# Tgback updates to beta(2.0) of version 3.0!
+# Tgback updates to beta(2.X) of version 3.0!
 ## What's new?
 
 1. **QR Codes**. Now backups can be saved **as QR codes**, them can be read inside the TelegramBackup. You can even read it from a good quality photo! The QR code is updated along with the backup refresh, and is sent automatically with a welcome message.
@@ -16,6 +16,10 @@
 6. **Refusal of user's API ID and API Hash**. Previously, the user had to create and provide their own API ID and Hash API, which could be misleading. Hardcoded parameters are now used. This **does not** affect anything, but now it’s enough to provide only a phone number and password. I would ask the developers **not to use them**, but to generate their own. I advise users to download files (including the specified links) **only** from this repository and official [**Telegram Channel**](https://t.me/nontgback).
 
 7. **Minor improvements of navigation and much bugfixes!**
+<br></br>
 
+`v3.0 beta(2.0):` Initial commit 
+
+`v3.0 beta(2.1):` Fix of [**bug**](https:github.com/NotStatilko/tgback/issues/4) in `1—1` mode.
 
 ###### _Backups of the new version are not compatible with the old ones, and vice versa. You can still use beta (1.x), but if you have the opportunity, please upgrade to the latest version._
