@@ -1,10 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from os.path import exists
+
 block_cipher = None
 
-
-a = Analysis(['TelegramBackup.py'],
-             pathex=['C:\\Users\\user\\Desktop\\tgback'],
+while True:
+    project_path = input('\n> Path to project folder (e.g: C:\\Users\\user\\Desktop\\tgback): ')
+    if not exists(project_path):
+        print('@: ! Invalid path!')
+    else:
+        print(); break
+    
+a = Analysis([project_path + 'TelegramBackup.py'],
+             pathex=[project_path],
              binaries=[
                 ('dll\\libiconv-2.dll','.'),
                 ('dll\\libzbar-32.dll','.'),
