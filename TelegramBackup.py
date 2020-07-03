@@ -238,9 +238,7 @@ async def main():
                                     print(f'@ Password is hashing, please wait {HASHING_TIME}...')
 
                                     filename = await account.backup(config[2],config[3])
-                                    #decoded_backup = reedsolo_decode(open(filename,'rb').read())
-                                    #makeqrcode(decoded_backup).save(filename + '.png')
-
+                                    
                                     clear_terminal()
                                     input(f'@ Successfully encrypted and backuped! ({filename})')
 
