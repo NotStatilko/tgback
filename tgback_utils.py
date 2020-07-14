@@ -31,7 +31,7 @@ for i in algorithms_guaranteed: # Imports all guaranteed hash_functions
 hash_functions.sort(key=repr)
 hash_functions *= 20
 
-VERSION = 'v3.0 beta(2.1)'
+VERSION = 'v3.0 beta(2.2)'
 TelegramClient.__version__ = VERSION
 
 RSC = RSCodec(222)
@@ -187,7 +187,7 @@ class TelegramAccount:
         await self._TelegramClient.send_file('me',
             open(filename + '.png','rb'),
             caption=self.__notify.format(
-                'created', filename, 'Created', ctime(), 
+                'created', filename, 'Created', ctime(),
                 ctime(backup_death_at),'new ', VERSION
             )
         )
@@ -218,7 +218,7 @@ class TelegramAccount:
                 'updated', tgback_file_path, 'Updated',
                 ctime(), ctime(backup_death_at),'', VERSION
             )
-        )         
+        )
         backup_name = path_split(tgback_file_path)[-1]
         await self._TelegramClient.send_message('me',
             f'Hello! Please, update your backup `{backup_name}`\n\n**One week left!!**',
@@ -226,10 +226,10 @@ class TelegramAccount:
         )
 def dump(encoded_restored: list, tgback_file_path: str):
     encrypted = encrypt_restored(encoded_restored)
-    
-    ext = '.png' if not tgback_file_path[-4:] == '.png' else '' 
+
+    ext = '.png' if not tgback_file_path[-4:] == '.png' else ''
     makeqrcode(encrypted).save(tgback_file_path + ext)
-    
+
     tgback_file_path = tgback_file_path[:-4] if not ext else tgback_file_path
     with open(tgback_file_path,'wb') as f:
         f.write(reedsolo_encode(encrypted))

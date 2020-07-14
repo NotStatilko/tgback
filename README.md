@@ -1,4 +1,4 @@
-# TelegramBackup v3.0 beta(2.1)
+# TelegramBackup v3.0 beta(2.2)
 ######  _Don't forget to look at [changelog](CHANGELOG.md)!_
 
 **TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram, you will **not be able** to log into your account if you lose access to the phone number. **Tgback** provides the ability to create an _alternative session_ (as if you were logging in from another device) and change the number on which the account is linked.
@@ -7,7 +7,7 @@
 
  ## Download and setting
  ### Windows
-  You can download `.exe` file [**from Telegram**](https://t.me/nontgback) or [**from Google Drive**](https://drive.google.com/folderview?id=1-x6Yxp3s5-SOAHTvCHdxkAsYP011jsDz). 
+  You can download `.exe` file [**from Telegram**](https://t.me/nontgback) or [**from Google Drive**](https://drive.google.com/folderview?id=1-x6Yxp3s5-SOAHTvCHdxkAsYP011jsDz).
  ### Linux
   If you are outside of Windows and want to use **TelegramBackup** - you need to install all dependencies. For the program to work correctly, you need to have [Python 3.6+](https://python.org), [ZBar](http://zbar.sourceforge.net) and after that, run
   ```bash
@@ -20,11 +20,11 @@
   To create a backup you need to select **first mode**
 
   ![main page](https://telegra.ph/file/5ba889aff30a503e32f80.png)
-  
+
   And choose the way you will create it.
 
   ![backup](https://telegra.ph/file/0424f7419d2cb13ceffbd.png)
-  
+
   You can enter everything manually, or create a special `tgback-config` file. If the first method is inconvenient for you, create a text file and fill it out using this template:
   ```
   phone_number; telegram_password; backup_password; backup_filename
@@ -36,14 +36,14 @@
 After all operations, you will receive a QR code and `.tgback` file. Please **check your backups** first for validity, since TelegramBackup is still in beta phase.
 
 ## Backup refresh and number replacement
- Due to recently discovered [problem](https://github.com/NotStatilko/tgback/issues/2), which prompted me to sit down for a code rewrite, backups need to be updated periodically, so that the session doesn't turn off automatically due to inactivity. At the moment once every two months. We can probably increase it to six months, but testing is needed. 
+ Due to recently discovered [problem](https://github.com/NotStatilko/tgback/issues/2), which prompted me to sit down for a code rewrite, backups need to be updated periodically, so that the session doesn't turn off automatically due to inactivity. At the moment once every two months. We can probably increase it to six months, but testing is needed.
 
 **TelegramBackup** automatically creates a reminder message, so you will be notified a week before the deadline. You can refresh the backup and change the number in the mode under number **2**. After refreshing the backup, you will receive a new updated QR code and `.tgback` file. Old backups will remain working, but they will show the wrong amount of time before the expiration of the validity period.
 
 ## A bit about security
- The backups you created **shouldn't** be active since the last update. If you notice something suspicious – **immediately** disconnect your backup session. After disconnecting a session, backups that are attached to it **will be destroyed**. 
+ The backups you created **shouldn't** be active since the last update. If you notice something suspicious – **immediately** disconnect your backup session. After disconnecting a session, backups that are attached to it **will be destroyed**.
 
-Although TelegramBackup allows you to change only the phone number, the backups themselves store **the key to the session**, upon receipt of which the attacker will receive **FULL** control over your account. You must choose complex passwords. 
+Although TelegramBackup allows you to change only the phone number, the backups themselves store **the key to the session**, upon receipt of which the attacker will receive **FULL** control over your account. You must choose complex passwords.
 
 Also, no security audits have been conducted by competent people, so I **do not guarantee** complete cryptographic strength. If you have any comments, open issue. I am attaching a QR-backup of my account here, try to hack if you want!
 

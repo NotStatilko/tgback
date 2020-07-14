@@ -18,8 +18,10 @@
 7. **Minor improvements of navigation and much bugfixes!**
 <br></br>
 
-`v3.0 beta(2.0):` Initial commit 
+`v3.0 beta(2.0):` Initial commit
 
 `v3.0 beta(2.1):` Fix of [**bug**](https:github.com/NotStatilko/tgback/issues/4) in `1—1` mode.
 
-###### _Backups of the new version are not compatible with the old ones, and vice versa. You can still use beta (1.x), but if you have the opportunity, please upgrade to the latest version._
+`v3.0 beta(2.2):` Issues: [#5](https://github.com/NotStatilko/tgback/issues/5), [#6](https://github.com/NotStatilko/tgback/issues/6) and [#7](https://github.com/NotStatilko/tgback/issues/7).
+
+###### _Backups of the new version are not compatible with the old ones, and vice versa. You can still use beta(1.x), but if you have the opportunity, please upgrade to the latest version._

@@ -39,21 +39,23 @@ def clear_terminal():
 async def main():
     try:
         async def request_confirmation_code(request_coroutine, phone, rcpc=False) -> tuple:
+            request_code = True
             while True:
                 clear_terminal()
-                print('@ Requesting confirmation code...')
+                if request_code:
+                    print('@ Requesting confirmation code...')
 
-                if rcpc:
-                    code_hash = await request_coroutine(phone)
-                else:
-                    code_hash = await request_coroutine()
+                    if rcpc:
+                        code_hash = await request_coroutine(phone)
+                    else:
+                        code_hash = await request_coroutine()
 
-                # code_hash is for request_change_phone_code (rcpc)
-
-                clear_terminal()
+                    request_time = f'{strftime("%H:%M:%S")} ({strftime("%I:%M:%S %p")})'
+                    # code_hash is for request_change_phone_code (rcpc)
+                    clear_terminal()
 
                 print(f'@ Please wait for message or call with code ({phone})')
-                print(f'@ Last request sended at {strftime("%H:%M:%S")}\n')
+                print(f'@ Last request sended at {request_time}\n')
                 print('> 1) I received the code')
                 print('>> 2) I haven\'t recieved code')
                 print('>>> 3) Return to main page')
@@ -64,8 +66,14 @@ async def main():
                     code = input('> Confirmation Code: ')
                     break
 
+                elif mode == '2':
+                    request_code = True
+
                 elif mode == '3':
                     await main()
+
+                else:
+                    request_code = False
 
             clear_terminal()
             return (code, code_hash)
@@ -116,7 +124,6 @@ async def main():
                                 print('@ Trying to connect with Telegram...')
                                 await account.login(password,code)
 
-
                                 while True:
                                     clear_terminal()
                                     tgback_filename = input('> Backup filename: ')
@@ -143,7 +150,7 @@ async def main():
                                 filename = await account.backup(tgback_password, tgback_filename)
 
                                 clear_terminal()
-                                input(f'@ Successfully encrypted and backuped! ({filename})')
+                                input(f'@ Successfully encrypted and backuped! ("{filename})"')
                                 await main()
 
                             except (KeyboardInterrupt, EOFError):
@@ -166,9 +173,9 @@ async def main():
                         except KeyboardInterrupt:
                             await main()
 
-                        except PhoneNumberInvalidError:
+                        except (PhoneNumberInvalidError, TypeError):
                             clear_terminal()
-                            input(f'@: ! The provided number ({phone}) is invalid')
+                            input(f'@: ! The provided number ("{phone}") is invalid. Try again.')
                             await main()
 
                     elif selected_section == '2': # Config file
@@ -238,9 +245,9 @@ async def main():
                                     print(f'@ Password is hashing, please wait {HASHING_TIME}...')
 
                                     filename = await account.backup(config[2],config[3])
-                                    
+
                                     clear_terminal()
-                                    input(f'@ Successfully encrypted and backuped! ({filename})')
+                                    input(f'@ Successfully encrypted and backuped! ("{filename})"')
 
                                     return_to_main = True; break
 
