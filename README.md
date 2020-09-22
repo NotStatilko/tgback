@@ -13,7 +13,7 @@
   ```bash
   git clone https://github.com/NotStatilko/tgback
   cd tgback
-  pip install -r requirements.txt
+  pip3 install -r requirements.txt
   python TelegramBackup.py
   ```
  ## Backup creation
