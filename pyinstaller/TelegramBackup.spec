@@ -1,6 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-from os.path import exists
+from os.path import exists, join as path_join
 
 block_cipher = None
 
@@ -11,12 +11,12 @@ while True:
     else:
         print(); break
     
-a = Analysis([project_path + 'TelegramBackup.py'],
+a = Analysis([path_join(project_path, 'TelegramBackup.py')],
              pathex=[project_path],
              binaries=[
-                ('dll\\libiconv-2.dll','.'),
-                ('dll\\libzbar-32.dll','.'),
-                ('dll\\libzbar-64.dll','.')
+                (path_join('dll','libiconv-2.dll'),'.'),
+                (path_join('dll','libzbar-32.dll'),'.'),
+                (path_join('dll','libzbar-64.dll'),'.')
             ],
              datas=[],
              hiddenimports=[],

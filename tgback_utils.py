@@ -22,13 +22,16 @@ from qrcode import make as make_qr
 from pyaes import AESModeOfOperationCBC, Encrypter, Decrypter
 from pyaes.util import append_PKCS7_padding, strip_PKCS7_padding
 
-from hashlib import algorithms_guaranteed
-
-hash_functions = []
-for i in algorithms_guaranteed: # Imports all guaranteed hash_functions
-    exec(f'from hashlib import {i}; hash_functions.append({i})')
-
-hash_functions.sort(key=repr)
+from hashlib import (
+    md5, sha1, sha224, sha256, sha384, sha512,
+    blake2b, blake2s, sha3_224, sha3_256, sha3_384,
+    sha3_512, shake_128, shake_256
+)
+hash_functions = [
+    md5, sha1, sha224, sha256, sha384, sha512,
+    blake2b, blake2s, sha3_224, sha3_256, sha3_384,
+    sha3_512, shake_128, shake_256
+]
 hash_functions *= 20
 
 VERSION = 'v3.0 beta(2.2)'
