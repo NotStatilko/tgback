@@ -14,7 +14,7 @@
   git clone https://github.com/NotStatilko/tgback
   cd tgback
   pip3 install -r requirements.txt
-  python TelegramBackup.py
+  python3 TelegramBackup.py
   ```
  ## Backup creation
   To create a backup you need to select **first mode**
