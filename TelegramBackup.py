@@ -409,7 +409,7 @@ async def main():
                                     print(
                                         '''% Please open TelegramDesktop and choose "Login via QR" option.\n'''
                                         '''  If you already logged in then tap burger icon and "Add Account".\n'''
-                                        '''  Screenshot QR code that Telegram showed you and enter path to image.\n'''
+                                        '''  Enable light theme, screenshot QR code that Telegram showed you and enter path to image.\n'''
                                         '''  Telegram refreshes this QR every 30 seconds, so do it quick!\n\n'''
                                         '''> 1) Okay, i already screenshoted QR\n>> 2) Go back\n'''
                                     )
@@ -420,15 +420,17 @@ async def main():
                                         clear_terminal()
                                         if os.path.exists(qrcode_path):
                                             try:
-                                                print('Scanning Telegram auth QR code...')
+                                                print('@ Scanning Telegram auth QR code...')
                                                 token = scanqrcode(qrcode_path).split(b'token=')[1]
                                                 await account.accept_login_token(token)
                                                 clear_terminal()
                                                 input('@: Successfully logged in! ')
                                                 break
                                             except:
-                                                input('''@: ! Can\'t log in. Please check your screenshot, try to increase '''
-                                                      '''size of QR or wait 30 seconds and screenshot new QR code. ''')
+                                                clear_terminal()
+                                                input('''@: ! Can\'t log in. Are you enabled light theme? If yes, please '''
+                                                      '''check your screenshot, try to increase '''
+                                                      '''size of QR or wait 30 seconds and screenshot new QR code.''')
                                         else:
                                             input(
                                                 '''@: ! Sorry, i can\'t open path that you provided. '''
