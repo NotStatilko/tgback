@@ -1,27 +1,17 @@
-# Tgback updates to beta(2.X) of version 3.0!
+# TelegramBackup updates to version 3.1!
 ## What's new?
 
-1. **QR Codes**. Now backups can be saved **as QR codes**, them can be read inside the TelegramBackup. You can even read it from a good quality photo! The QR code is updated along with the backup refresh, and is sent automatically with a welcome message.
+1. **Destroy option**. Now you can disconnect Telegram session of your backup with **tgback**.
 
-<img src="https://telegra.ph/file/d5c76ab1f117bc4bd58fa.jpg" width="" height=""></img>
+2. **Use without PIL and ZBar**. If your system doesn't support `ZBar` or `PIL` then you can create only `.tgback files`. You still need `qrcode` python package.
 
-2. **Reed Solomon codes**. Regular backups are now additionally protected by [Reed Solomon codes](https://en.m.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction). If data is corrupted, they can help. Backup size now takes at least **4 kilobytes**.
+3. **Calls for change phone**. In previous version Telegram sends verification codes for changing number only via SMS. Now Telegram can call you.
 
-3. **Improved encryption**. Now IV is randomly generated and added to the ciphertext. Earlier `TgbackAES` took IV from the password, which is a [**vulnerability**](https://en.m.wikipedia.org/wiki/Initialization_vector).
+4. **Change password**. Now you can change password of your backup. Please note that tgback **can't change** password of old backups or backup copies. It only changes password of **current backup** that you opened. If password of your backup was leaked (it's VERY not ok) please use **"Destroy backup"** option.
 
-4. **Improved Keygen**. Earlier, the password was passed in the basis exclusively through the `sha3_256` hash function, which is also a vulnerability because of [ASIC](https://en.m.wikipedia.org/wiki/Application-specific_integrated_circuit) devices. Now, a lot of hash functions are involved in generating the key from the password, and their order completely [depends on the password](https://github.com/NotStatilko/tgback/blob/fb469622ebe658e411c51f09b4cde935d48dce88/tgback_utils.py#L59).
+5. **TelegramDesktop login**. Now you can use your backups to **login into TelegramDesktop**. It's much better **than** [this](https://github.com/NotStatilko/tgback/issues/8) suggestion. You just need to screenshot Telegram's login QR and provide path to screenshot to tgback. Read more about Telegram's login QR's [here](https://core.telegram.org/api/qr-login).
 
-5. **Calls and codes**. Now if you don't receive the code, you can request it again. After several requests to re-send the Telegram code, they will **call you** and dictate it.
+6. **Refusal of "Stay cool"**. Because you can't be uncool.
 
-6. **Refusal of user's API ID and API Hash**. Previously, the user had to create and provide their own API ID and Hash API, which could be misleading. Hardcoded parameters are now used. This **does not** affect anything, but now it’s enough to provide only a phone number and password. I would ask the developers **not to use them**, but to generate their own. I advise users to download files (including the specified links) **only** from this repository and official [**Telegram Channel**](https://t.me/nontgback).
 
-7. **Minor improvements of navigation and much bugfixes!**
-<br></br>
-
-`v3.0 beta(2.0):` Initial commit
-
-`v3.0 beta(2.1):` Fix of [**bug**](https:github.com/NotStatilko/tgback/issues/4) in `1—1` mode.
-
-`v3.0 beta(2.2):` Issues: [#5](https://github.com/NotStatilko/tgback/issues/5), [#6](https://github.com/NotStatilko/tgback/issues/6) and [#7](https://github.com/NotStatilko/tgback/issues/7).
-
-###### _Backups of the new version are not compatible with the old ones, and vice versa. You can still use beta(1.x), but if you have the opportunity, please upgrade to the latest version._
+###### _Backups of the new version are compatible with the old ones backups of tgback v3.0

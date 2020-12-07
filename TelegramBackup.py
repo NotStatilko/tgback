@@ -1,12 +1,18 @@
-print('\n' * 35 + '@ TelegramBackup is loading...')
+print('\n' * 100 + '@ TelegramBackup is loading...')
 
 import os.path
 
+from tgback_utils import (
+    TelegramAccount, TgbackAES, restore,
+    VERSION, qr_available, image_error, scanqrcode
+)
 from getpass import getpass
+from sys import platform
 from traceback import print_exc
 from time import ctime, strftime
+
 from reedsolo import ReedSolomonError
-from PIL import UnidentifiedImageError
+
 from asyncio import run as asyncio_run
 from os import system as os_system, cpu_count
 
@@ -16,9 +22,6 @@ from telethon.errors.rpcerrorlist import (
     PhoneNumberInvalidError, FloodWaitError, PhoneCodeEmptyError,
     PhoneCodeInvalidError, FreshChangePhoneForbiddenError
 )
-from tgback_utils import TelegramAccount, restore, VERSION
-
-
 if cpu_count() > 1:
     from time import time
     from hashlib import sha3_256
@@ -33,25 +36,29 @@ else:
     HASHING_TIME = 'some time'
 
 def clear_terminal():
-    os_system('cls || clear')
-    print('\n' * 35)
+    os_system("printf '\33c\e[3J'")
+    print('\n' * 100)
 
 async def main():
     try:
-        async def request_confirmation_code(request_coroutine, phone, rcpc=False) -> tuple:
+        async def request_confirmation_code(request_coroutine, phone: str, account: TelegramAccount=None) -> tuple:
             request_code = True
+            code_hash = None
             while True:
                 clear_terminal()
                 if request_code:
                     print('@ Requesting confirmation code...')
 
-                    if rcpc:
-                        code_hash = await request_coroutine(phone)
+                    if account: # if account specified then it's request to change phone
+                        if not code_hash:
+                            code_hash = await request_coroutine(phone)
+                          # code_hash is for request_change_phone_code
+                        else:
+                            await account.resend_code(phone, code_hash)
                     else:
                         code_hash = await request_coroutine()
 
-                    request_time = f'{strftime("%H:%M:%S")} ({strftime("%I:%M:%S %p")})'
-                    # code_hash is for request_change_phone_code (rcpc)
+                    request_time = f'{strftime("%I:%M:%S %p")}'
                     clear_terminal()
 
                 print(f'@ Please wait for message or call with code ({phone})')
@@ -80,8 +87,9 @@ async def main():
 
         while True:
             clear_terminal()
+            about_qr = '' if qr_available else '(not available)'
             print(
-                f''' - TelegramBackup {VERSION} -\n\n'''
+                f''' - TelegramBackup {VERSION} (bit.ly/tgback) -\n\n'''
                 '''> 1) Backup Telegram account\n'''
                 '''>> 2) Open .tgback backup\n'''
                 '''>>> 3) Exit from TelegramBackup'''
@@ -268,11 +276,17 @@ async def main():
             elif selected_section == '2': # Open .tgback
                 while True:
                     clear_terminal()
-                    print('> 1) Load from QR')
+                    print('> 1) Load from QR ' + about_qr)
                     print('>> 2) Use .tgback file')
                     print('>>> 3) Back to main page')
 
                     open_mode = input('\n@ Input: ')
+
+                    if open_mode == '1' and not qr_available:
+                        clear_terminal()
+                        input('@: ! Can\'t reach ZBar or PIL. Please check installed dependecies. ')
+                        await main()
+
 
                     if open_mode and open_mode in '123':
                         clear_terminal(); break
@@ -299,7 +313,7 @@ async def main():
                         clear_terminal()
                         input('\n@: ! Incorrect Password or corrupted backup. ')
                         await main()
-                    except (IndexError, UnidentifiedImageError):
+                    except (IndexError, image_error):
                         clear_terminal()
                         input('''\n@: ! Impossible to read QR code. '''
                               '''Are you sure that image is correct and in good quality?''')
@@ -311,12 +325,16 @@ async def main():
                         while True:
                             clear_terminal()
                             return_to_page = False
+                            about_qr = '' if qr_available else '(not available)'
                             print(
                                 f'''% Hello, {restored[3] + ' ' + restored[5]}! (id{restored[4]})\n'''
                                 f'''@ Backup valid until {ctime(float(restored[2]))}\n\n'''
-                                f'''> 1) Change account phone number\n'''
-                                f'''>> 2) Refresh .tgback backup\n'''
-                                f'''>>> 3) Return to main page'''
+                                '''> 1) Change account phone number\n'''
+                                '''>> 2) Refresh .tgback backup\n'''
+                                f'''>>> 3) Log in to TelegramDesktop {about_qr}\n'''
+                                '''>>>> 4) Change backup password\n'''
+                                '''>>>>> 5) Destroy backup\n'''
+                                '''>>>>>> 6) Return to main page'''
                             )
                             selected_section = input('\n@ Input: ')
                             if selected_section == '1':
@@ -328,7 +346,7 @@ async def main():
                                     new_phone = input('> Enter your new phone number: ')
                                     try:
                                        code, code_hash = await request_confirmation_code(
-                                           account.request_change_phone_code, new_phone, rcpc=True,
+                                           account.request_change_phone_code, new_phone, account=account,
                                        )
                                        await account.change_phone(code, code_hash, new_phone)
 
@@ -381,7 +399,89 @@ async def main():
                                     clear_terminal()
                                     input('\n\n@: ! Backup was disconnected.')
 
+                            elif selected_section == '3' and not qr_available:
+                                clear_terminal()
+                                input('@: ! Can\'t reach ZBar or PIL. Please check installed dependecies. ')
+
                             elif selected_section == '3':
+                                while True:
+                                    clear_terminal()
+                                    print(
+                                        '''% Please open TelegramDesktop and choose "Login via QR" option.\n'''
+                                        '''  If you already logged in then tap burger icon and "Add Account".\n'''
+                                        '''  Screenshot QR code that Telegram showed you and enter path to image.\n'''
+                                        '''  Telegram refreshes this QR every 30 seconds, so do it quick!\n\n'''
+                                        '''> 1) Okay, i already screenshoted QR\n>> 2) Go back\n'''
+                                    )
+                                    choice = input('@ Input: ')
+                                    clear_terminal()
+                                    if choice == '1':
+                                        qrcode_path = input('@ Telegram QR path: ')
+                                        clear_terminal()
+                                        if os.path.exists(qrcode_path):
+                                            try:
+                                                print('Scanning Telegram auth QR code...')
+                                                token = scanqrcode(qrcode_path).split(b'token=')[1]
+                                                await account.accept_login_token(token)
+                                                clear_terminal()
+                                                input('@: Successfully logged in! ')
+                                                break
+                                            except:
+                                                input('''@: ! Can\'t log in. Please check your screenshot, try to increase '''
+                                                      '''size of QR or wait 30 seconds and screenshot new QR code. ''')
+                                        else:
+                                            input(
+                                                '''@: ! Sorry, i can\'t open path that you provided. '''
+                                                '''Re-screenshot new QR and check your path.'''
+                                            )
+                                    elif choice == '2':
+                                        break
+
+                            elif selected_section == '4':
+                                clear_terminal()
+                                new_password = getpass('> Your new password: ')
+                                c_new_password = getpass('>> Confirm password: ')
+                                if new_password != c_new_password:
+                                    clear_terminal()
+                                    input('@: ! Password mismatch. Please try again.')
+                                else:
+                                    clear_terminal()
+                                    print(f'@ Password is hashing, please wait {HASHING_TIME}...')
+                                    restored[0] = TgbackAES(b'')._hash_password(new_password.encode()).digest()
+                                    clear_terminal()
+                                    print('@ Refreshing...')
+                                    await account.refresh_backup(restored, path_to_tgback)
+                                    clear_terminal()
+                                    input('@: Your password has been successfully changed! ')
+
+                            elif selected_section == '5':
+                                while True:
+                                    clear_terminal()
+                                    print(
+                                        '''% Are you sure you want to destroy your backup?\n\n'''
+                                        '''> 1) Yes\n>> 2) No\n'''
+                                    )
+                                    confirm = input('@ Input: ')
+                                    if confirm == '1':
+                                        clear_terminal()
+                                        print('''% No, seriously. After this operation, you will no longer be '''
+                                            '''able to change your phone number through this backup.\n''')
+                                        print('% Are you totally sure? Type "yes" or "no"\n')
+                                        if input('@ Input: ') == 'yes':
+                                            clear_terminal()
+                                            if await account.logout():
+                                                input('@: Successfully. Now you can delete your backup file.')
+                                                await main()
+                                            else:
+                                                input('@: ! Something went wrong, can\'t disconnect session. Try again.')
+                                                break
+                                        else:
+                                            break
+
+                                    elif confirm == '2':
+                                        break
+
+                            elif selected_section == '6':
                                 await main()
 
             elif selected_section == '3':

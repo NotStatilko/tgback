@@ -1,10 +1,19 @@
-from PIL import Image
+try:
+    from PIL import Image, UnidentifiedImageError
+    from pyzbar import pyzbar
+    qr_available = True
+except ImportError:
+    qr_available = False
+
+image_error = IndexError if not qr_available else UnidentifiedImageError
+
 from os import urandom
 from itertools import cycle
 from time import time, ctime
 from datetime import timedelta
+from qrcode import make as make_qr
 from os.path import split as path_split
-from base64 import b64encode, b64decode
+from base64 import b64encode, b64decode, urlsafe_b64decode
 
 from telethon import TelegramClient
 from telethon.tl.types import CodeSettings
@@ -15,9 +24,10 @@ from telethon.errors import (
 from telethon.tl.functions.account import (
     ChangePhoneRequest, SendChangePhoneCodeRequest
 )
-from pyzbar import pyzbar
+from telethon.tl.functions.auth import (
+    ResendCodeRequest, AcceptLoginTokenRequest
+)
 from reedsolo import RSCodec
-from qrcode import make as make_qr
 
 from pyaes import AESModeOfOperationCBC, Encrypter, Decrypter
 from pyaes.util import append_PKCS7_padding, strip_PKCS7_padding
@@ -34,7 +44,7 @@ hash_functions = [
 ]
 hash_functions *= 20
 
-VERSION = 'v3.0 beta(2.2)'
+VERSION = 'v3.1'
 TelegramClient.__version__ = VERSION
 
 RSC = RSCodec(222)
@@ -127,7 +137,7 @@ class TelegramAccount:
             '''**lose access** to `{1}`. I created a scheduled message for '''
             '''you a week before the time expires, you will be automatically '''
             '''notified and will have time to update.\n\n'''
-            '''`@ {2}:  {3}`\n`@ Will off: {4}`\n`@ Telegram Backup {6}`\n\nStay Cool!'''
+            '''`@ {2}:  {3}`\n`@ Will off: {4}`\n`@ Telegram Backup {6}`'''
         )
     @staticmethod
     def __prepare_user_entity(entity):
@@ -153,6 +163,12 @@ class TelegramAccount:
             except SessionPasswordNeededError:
                 await self._TelegramClient.sign_in(password=password)
 
+    async def logout(self):
+        return await self._TelegramClient.log_out()
+
+    async def accept_login_token(self, token: 'base64') -> None:
+        await self._TelegramClient(AcceptLoginTokenRequest(urlsafe_b64decode(token)))
+
     async def request_change_phone_code(self, new_number: str) -> str:
         request = await self._TelegramClient(SendChangePhoneCodeRequest(
             phone_number = new_number,
@@ -161,6 +177,9 @@ class TelegramAccount:
             )
         ))
         return request.phone_code_hash
+
+    async def resend_code(self, phone_number: str, phone_code_hash: str) -> None:
+        await self._TelegramClient(ResendCodeRequest(phone_number, phone_code_hash))
 
     async def change_phone(self, code: str, code_hash: str, new_number: str) -> None:
         await self._TelegramClient(ChangePhoneRequest(
@@ -239,7 +258,7 @@ def dump(encoded_restored: list, tgback_file_path: str):
 
 def restore(tgback_file_path: str, password: bytes, is_qr=False) -> list:
     if is_qr:
-        decrypted = decrypt_restored(scanqrcode(tgback_file_path), password)
+        decrypted = decrypt_restored(b64decode(scanqrcode(tgback_file_path)), password)
     else:
         with open(tgback_file_path,'rb') as f:
             decrypted = decrypt_restored(reedsolo_decode(f.read()), password)
@@ -293,8 +312,8 @@ def reedsolo_decode(encoded_backup: bytes) -> bytes:
 
 def makeqrcode(encrypted_backup: bytes) -> Image:
     encoded = b64encode(encrypted_backup)
-    while len(encoded) % 100: encoded += b' '
-    return make_qr(encoded)
+    while len(encoded) % 100: encoded += b' ' # There is problem with make_qr. scanqrcode
+    return make_qr(encoded)                   # | can't scan QR codes if they `not len(text) % 100`
 
 def scanqrcode(qrcode_path: str) -> bytes:
-    return b64decode(pyzbar.decode(Image.open(qrcode_path))[0].data.rstrip())
+    return pyzbar.decode(Image.open(qrcode_path))[0].data.rstrip()
