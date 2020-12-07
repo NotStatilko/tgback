@@ -7,7 +7,7 @@
 
  ## Download and setting
  ### Windows
-  It's no executable for Windows for now because i destroyed this piece of ... you know. I will publish executable as soon as I have access to the Windows. Please check official [tgback channel](t.me/nontgback). It can be already here (check last commits).
+  It's no executable for Windows for now because i destroyed this piece of ... you know. I will publish executable as soon as I have access to the Windows. Please check official [tgback channel](https://t.me/nontgback). It can be already here (check last commits).
  ### Linux and making Windows executable
   If you want to make **TelegramBackup** then you need to install all dependencies. For the program to work correctly, you need to have [Python 3.6+](https://python.org), [ZBar](http://zbar.sourceforge.net) and [pip](https://pypi.org/project/pip/) (it can be already installed with Python 3.6+, type `pip` or `pip3` in your terminal/cmd). After that, run:
   ```bash
