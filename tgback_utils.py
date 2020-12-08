@@ -121,8 +121,11 @@ class TgbackAES:
             iv = edata[-16:]; edata = edata[:-16] # LAST 16 BYTES OF ENCRYPTED DATA IS IV !
             aes_cbc = Decrypter(AESModeOfOperationCBC(self._password_hash, iv))
             decrypted = aes_cbc.feed(edata); decrypted += aes_cbc.feed()
-            return strip_PKCS7_padding(decrypted)
-
+            try:
+                return strip_PKCS7_padding(decrypted)
+            except ValueError:
+                return decrypted # no padding
+                
 class TelegramAccount:
     def __init__(self, phone_number: str=None, session: str=None):
         self._API_ID = 1770281
