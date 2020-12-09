@@ -14,4 +14,4 @@
 6. **Refusal of "Stay cool"**. Because you can't be uncool.
 
 
-###### _Backups of the new version are compatible with the old ones backups of tgback v3.0
+###### _Backups of the new version are compatible with the old ones backups of tgback v3.0_
