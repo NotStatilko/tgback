@@ -35,8 +35,15 @@ if cpu_count() > 1:
 else:
     HASHING_TIME = 'some time'
 
+if platform.startswith('win'):
+    clear_command = 'cls'
+elif platform.startswith('cygwin'):
+    clear_command = 'printf "\033c"'
+else:
+    clear_command = "printf '\33c\e[3J' || cls || clear"
+
 def clear_terminal():
-    os_system("printf '\33c\e[3J'")
+    os_system(clear_command)
     print('\n' * 100)
 
 async def main():
