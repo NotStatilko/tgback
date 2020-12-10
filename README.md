@@ -23,7 +23,7 @@
   ```
   pyinstaller TelegramBackup.spec
   ```
-  You will need to enter path to tgback folder, just copy it from folder info. After making TelegramBackup executable check it if it works and after  that you can remove all tgback-related stuff (ZBar, Python, etc).
+  You will need to enter path to tgback folder, just copy it from folder info. After making TelegramBackup executable check it if it works and after  that you can remove all tgback-related stuff (ZBar [if you not on linux], Python, etc).
  ## Backup creation
   To create a backup you need to select **first mode**
 
