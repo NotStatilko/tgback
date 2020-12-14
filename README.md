@@ -24,6 +24,13 @@
   pyinstaller TelegramBackup.spec
   ```
   You will need to enter path to tgback folder, just copy it from folder info. After making TelegramBackup executable check it if it works and after  that you can remove all tgback-related stuff (ZBar [if you not on linux], Python, etc).
+ 
+ #### Linux
+ If you want to use tgback on Linux then to QR-features you need to have **libzbar0** (or analogue) onto your machine.
+ ```
+ sudo apt install libzbar0
+ ```
+ 
  ## Backup creation
   To create a backup you need to select **first mode**
 
@@ -49,7 +56,7 @@ After all operations, you will receive a QR code and `.tgback` file. Please **ch
 **TelegramBackup** automatically creates a reminder message, so you will be notified a week before the deadline. You can refresh the backup and change the number in the mode under number **2**. After refreshing the backup, you will receive a new updated QR code and `.tgback` file. Old backups will remain working, but they will be show the wrong amount of time before the expiration of the validity period.
 
 ## A bit about security
- The backups you created **shouldn't** be active since the last update. If you notice something suspicious – **immediately** disconnect your backup session. After disconnecting a session, backups that are attached to it **will be destroyed**.
+ The backups you created **shouldn't** be active since the last update. If you notice something suspicious – **immediately** disconnect (via Destroy option or Telegram) your backup session. After disconnecting a session, **ALL** backups that are attached to it **will be destroyed**.
 
 TelegramBackup backups store **the key to the session**, upon receipt of which the attacker will receive **FULL** control over your account. You must choose complex passwords.
 
