@@ -165,7 +165,7 @@ async def main():
                                 filename = await account.backup(tgback_password, tgback_filename)
 
                                 clear_terminal()
-                                input(f'@ Successfully encrypted and backuped! ("{filename})"')
+                                input(f'@ Successfully encrypted and backuped! ({filename})')
                                 await main()
 
                             except (KeyboardInterrupt, EOFError):
@@ -190,7 +190,7 @@ async def main():
 
                         except (PhoneNumberInvalidError, TypeError):
                             clear_terminal()
-                            input(f'@: ! The provided number ("{phone}") is invalid. Try again.')
+                            input(f'@: ! The provided number ({phone}) is invalid. Try again.')
                             await main()
 
                     elif selected_section == '2': # Config file
@@ -262,7 +262,7 @@ async def main():
                                     filename = await account.backup(config[2],config[3])
 
                                     clear_terminal()
-                                    input(f'@ Successfully encrypted and backuped! ("{filename})"')
+                                    input(f'@ Successfully encrypted and backuped! ({filename})')
 
                                     return_to_main = True; break
 
@@ -416,7 +416,6 @@ async def main():
                                     print(
                                         '''% Please open TelegramDesktop and choose "Login via QR" option.\n'''
                                         '''  If you already logged in then tap burger icon and "Add Account".\n'''
-                                        '''  Enable light theme, screenshot QR code that Telegram showed you and enter path to image.\n'''
                                         '''  Telegram refreshes this QR every 30 seconds, so do it quick!\n\n'''
                                         '''> 1) Okay, i already screenshoted QR\n>> 2) Go back\n'''
                                     )
@@ -435,8 +434,7 @@ async def main():
                                                 break
                                             except:
                                                 clear_terminal()
-                                                input('''@: ! Can\'t log in. Are you enabled light theme? If yes, please '''
-                                                      '''check your screenshot, try to increase '''
+                                                input('''@: ! Can\'t log in. Try to increase '''
                                                       '''size of QR or wait 30 seconds and screenshot new QR code.''')
                                         else:
                                             input(

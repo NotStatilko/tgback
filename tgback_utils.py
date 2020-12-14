@@ -1,5 +1,5 @@
 try:
-    from PIL import Image, UnidentifiedImageError
+    from PIL import Image, ImageOps, UnidentifiedImageError
     from pyzbar import pyzbar
     qr_available = True
 except ImportError:
@@ -274,13 +274,16 @@ def decode_restored(encoded_restored: list) -> list:
     to the required types and decodes all
     from base64 to correct format.
     '''
-    restored = encoded_restored[:]
-    restored[0] = b64decode(restored[0])
-    restored[1] = restored[1].decode()
-    restored[2] = float(restored[2])
-    restored[3] = b64decode(restored[3]).decode()
-    restored[4] = int(restored[4])
-    restored[5] = b64decode(restored[5]).decode()
+    try:
+        restored = encoded_restored[:]
+        restored[0] = b64decode(restored[0])
+        restored[1] = restored[1].decode()
+        restored[2] = float(restored[2])
+        restored[3] = b64decode(restored[3]).decode()
+        restored[4] = int(restored[4])
+        restored[5] = b64decode(restored[5]).decode()
+    except IndexError:
+        raise ValueError('Invalid decrypted restored. Bad decryption?')
 
     return restored
 
@@ -315,8 +318,12 @@ def reedsolo_decode(encoded_backup: bytes) -> bytes:
 
 def makeqrcode(encrypted_backup: bytes) -> Image:
     encoded = b64encode(encrypted_backup)
-    while len(encoded) % 100: encoded += b' ' # There is problem with make_qr. scanqrcode
+    while len(encoded) % 100: encoded += b' ' # There is problem with scanqrcode, it
     return make_qr(encoded)                   # | can't scan QR codes if they `not len(text) % 100`
 
 def scanqrcode(qrcode_path: str) -> bytes:
-    return pyzbar.decode(Image.open(qrcode_path))[0].data.rstrip()
+    try:
+        return pyzbar.decode(Image.open(qrcode_path))[0].data.rstrip()
+    except:
+        image = ImageOps.invert(Image.open(qrcode_path).convert('RGB')) 
+        return pyzbar.decode(image)[0].data.rstrip() # If dark theme and inverted QR colors
