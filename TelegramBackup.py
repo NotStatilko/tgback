@@ -14,7 +14,7 @@ from time import ctime, strftime
 from reedsolo import ReedSolomonError
 
 from asyncio import run as asyncio_run
-from os import system as os_system, cpu_count
+from os import system as os_system
 
 from telethon.errors.rpcerrorlist import (
     AuthKeyUnregisteredError, PhoneCodeInvalidError,
@@ -22,19 +22,6 @@ from telethon.errors.rpcerrorlist import (
     PhoneNumberInvalidError, FloodWaitError, PhoneCodeEmptyError,
     PhoneCodeInvalidError, FreshChangePhoneForbiddenError
 )
-if cpu_count() > 1:
-    from time import time
-    from hashlib import sha3_256
-
-    hashing_time_start = time()
-    to_hash = b'0' * 32
-    for i in range(1000):
-        sha3_256(to_hash).digest()
-
-    HASHING_TIME = f'~{round(2_222.222 * (time() - hashing_time_start))}s'
-else:
-    HASHING_TIME = 'some time'
-
 if platform.startswith('win'):
     clear_command = 'cls'
 elif platform.startswith('cygwin'):
@@ -49,8 +36,8 @@ def clear_terminal():
 async def main():
     try:
         async def request_confirmation_code(request_coroutine, phone: str, account: TelegramAccount=None) -> tuple:
-            request_code = True
-            code_hash = None
+            request_code, code_hash = True, None
+            phone = phone.replace(' ','')
             while True:
                 clear_terminal()
                 if request_code:
@@ -147,7 +134,8 @@ async def main():
                                         tgback_filename = input('> Backup filename: ')
                                     else:
                                         break
-
+                                clear_terminal()
+                                print('@ To create backup you need at least 1GB free for now.\n')
                                 tgback_password = getpass('>> Backup password: ')
                                 c_tgback_password = getpass('>>> Re-enter password: ')
                                 while True:
@@ -160,7 +148,7 @@ async def main():
                                         break
 
                                 clear_terminal()
-                                print(f'@ Password is hashing, please wait {HASHING_TIME}...')
+                                print('@ Creating key with your password...')
 
                                 filename = await account.backup(tgback_password, tgback_filename)
 
@@ -257,13 +245,10 @@ async def main():
                                     input('@: ! Invalid password. Try again. ')
                                     await main()
                                 else:
-                                    print(f'@ Password is hashing, please wait {HASHING_TIME}...')
-
+                                    print('@ Creating key with your password...')
                                     filename = await account.backup(config[2],config[3])
-
                                     clear_terminal()
                                     input(f'@ Successfully encrypted and backuped! ({filename})')
-
                                     return_to_main = True; break
 
                             except ConnectionError:
@@ -310,9 +295,11 @@ async def main():
                     input(f'@: ! Can\'t find .tgback {backup_type}. Check entered path.')
                     await main()
                 else:
+                    clear_terminal()
+                    print('@ To decrypt backup you need at least 1GB free for now.\n')
                     tgback_password = getpass(f'>> Password to .tgback {backup_type}: ')
                     clear_terminal()
-                    print(f'@ Password is hashing, please wait {HASHING_TIME}...')
+                    print('@ Creating key with your password...')
                     try:
                         restored = restore(path_to_tgback, tgback_password, is_qr=is_qr)
                         assert len(restored) == 6
@@ -446,6 +433,7 @@ async def main():
 
                             elif selected_section == '4':
                                 clear_terminal()
+                                print('@ To change password you need at least 1GB free for now.\n')
                                 new_password = getpass('> Your new password: ')
                                 c_new_password = getpass('>> Confirm password: ')
                                 if new_password != c_new_password:
@@ -453,7 +441,7 @@ async def main():
                                     input('@: ! Password mismatch. Please try again.')
                                 else:
                                     clear_terminal()
-                                    print(f'@ Password is hashing, please wait {HASHING_TIME}...')
+                                    print('@ Creating key with your password...')
                                     restored[0] = TgbackAES(b'')._hash_password(new_password.encode()).digest()
                                     clear_terminal()
                                     print('@ Refreshing...')

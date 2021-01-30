@@ -3,7 +3,7 @@
 
 **TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram, you will **not be able** to log into your account if you lose access to the phone number. **Tgback** provides the ability to create an _alternative session_ (as if you were logging in from another device) and restore account with TelegramDesktop or change the number on which the account is linked.
 
-**TelegramBackup** produces a special `.tgback` file as well as a QR code - both are your backup. You can choose what is more convenient for you to store, as `.tgback` and a QR code represent **the same** session. For encryption of backups, `AES-CBC-256` is used with a key in the form of your password passed through more than 2 million hash operations of various hash functions, the order of which is based on the password you set. It's like [**NonHashpass**](https://github.com/NotStatilko/NonHashpass), but another algorithm.
+**TelegramBackup** produces a special `.tgback` file as well as a QR code - both are your backup. You can choose what is more convenient for you to store, as `.tgback` and a QR code represent **the same** session. For encryption of backups, `AES-256/CBC` is used with a [scrypt](https://en.wikipedia.org/wiki/Scrypt) key. 
 
  ## Download and setting
  ### Windows
@@ -24,13 +24,13 @@
   pyinstaller TelegramBackup.spec
   ```
   You will need to enter path to tgback folder, just copy it from folder info. After making TelegramBackup executable check it if it works and after  that you can remove all tgback-related stuff (ZBar [if you not on linux], Python, etc).
- 
+
  #### Linux
  If you want to use tgback on Linux then to QR-features you need to have **libzbar0** (or analogue) onto your machine.
  ```
  sudo apt install libzbar0
  ```
- 
+
  ## Backup creation
   To create a backup you need to select **first mode**
 
@@ -77,4 +77,3 @@ If you somehow find this useful —
 ```
 Bitcoin: 1AJxszajUZVard5NEvct9KbC5pCfBBHmt3
 ```
-

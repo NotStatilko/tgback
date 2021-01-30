@@ -8,6 +8,7 @@ except ImportError:
 image_error = IndexError if not qr_available else UnidentifiedImageError
 
 from os import urandom
+from hashlib import scrypt
 from itertools import cycle
 from time import time, ctime
 from datetime import timedelta
@@ -32,70 +33,45 @@ from reedsolo import RSCodec
 from pyaes import AESModeOfOperationCBC, Encrypter, Decrypter
 from pyaes.util import append_PKCS7_padding, strip_PKCS7_padding
 
-from hashlib import (
-    md5, sha1, sha224, sha256, sha384, sha512,
-    blake2b, blake2s, sha3_224, sha3_256, sha3_384,
-    sha3_512, shake_128, shake_256
-)
-hash_functions = [
-    md5, sha1, sha224, sha256, sha384, sha512,
-    blake2b, blake2s, sha3_224, sha3_256, sha3_384,
-    sha3_512, shake_128, shake_256
-]
-hash_functions *= 20
-
-VERSION = 'v3.1'
+VERSION = 'v4.0'
 TelegramClient.__version__ = VERSION
 
 RSC = RSCodec(222)
 
+DEFAULT_SALT = b'\x82\xa1\x93<Zk2\x8b\x8ah|m\x04YC\x14\x97\xc4\nx\x14E?\xffmY\xa4\x9a*8\xc2\xb2'
 
 class TgbackAES:
-    def __init__(self, password: bytes, iv: bytes=None):
+    def __init__(self, password: bytes):
+        if not password:
+            raise Exception('Password isn\'t specified.')
         if not isinstance(password, bytes):
             password = password.encode()
 
         self.__raw_password = password
-        self.__password_hash = None
-        self.__iv = urandom(16) if not iv else iv
+        self._scrypt_key = None
 
     @staticmethod
-    def _hash_password(password: bytes, iter_count=2_222_222) -> sha3_256:
-        salt = (
-            b'''\xcdVno\xc7\xeey7\x84\xfb^\xba\x8d\\\x1e'''
-            b'''\xdfm-\xf3(?\xa3\x1fN|\x1e\xe2\x8f\x93\xe1'''
-            b'''\x81}\xc3\x8e^\xd7\xfc\x03\x92\xc3\x83\xd3'''
-            b'''\xb5\xb8#\xa3\x90\xf1Y\xabT}M\x1f\xc5\x97R/'''
-            b'''\xd7\n\xd5\xe3\xf9\xb3b\xc3Y\\\xb3\x1dj]v'6'''
+    def _make_scrypt_key(password: bytes, salt: bytes=DEFAULT_SALT, n=2**20, r=8, p=1) -> bytes:
+        m = 128 * r * (n + p + 2)
+        return scrypt(
+            password, n=n, r=r, dklen=32,
+            p=p, salt=salt, maxmem=m
         )
-        mainhash = sha512(password + salt).digest()
-        mainhashfuncs = cycle((hash_functions[i] for i in mainhash))
-
-        hashed = sha512(mainhash).digest()
-        for _ in range(iter_count):
-            hash_function = next(mainhashfuncs)
-            try:
-                hashed = hash_function(hashed)
-                hashed = hashed.digest()
-            except TypeError: # SHAKE requires digest size
-                hashed = hashed.digest(64)
-
-        return sha3_256(hashed)
-
-    def init(self, password_hash: bytes=None) -> None:
-        if password_hash:
-            self._password_hash = password_hash
+    def init(self, scryptkey: bytes=None) -> None:
+        if scryptkey:
+            self._scrypt_key = scryptkey
         else:
             if not self.__raw_password:
                 raise Exception('Already initialized')
             else:
-                self._password_hash = self._hash_password(self.__raw_password).digest()
+                self._scrypt_key = self._make_scrypt_key(self.__raw_password)
                 self.__raw_password = None
 
-    def encrypt(self, data: bytes) -> bytes:
-        if not self._password_hash:
+    def encrypt(self, data: bytes, iv: bytes=None) -> bytes:
+        if not self._scrypt_key:
             raise Exception('You need to call .init() for first')
         else:
+            iv = urandom(16) if not iv else iv
             if not isinstance(data, bytes):
                 data = data.encode()
 
@@ -104,28 +80,28 @@ class TgbackAES:
 
             aes_cbc = Encrypter(
                 AESModeOfOperationCBC(
-                    self._password_hash, self.__iv)
+                    self._scrypt_key, iv)
             )
             encrypted =  aes_cbc.feed(data)
             encrypted += aes_cbc.feed()
-            encrypted += self.__iv # LAST 16 BYTES OF ENCRYPTED DATA IS IV !
+            encrypted += iv # LAST 16 BYTES OF ENCRYPTED DATA IS IV !
             return encrypted
 
     def decrypt(self, edata: bytes) -> bytes:
-        if not self._password_hash:
+        if not self._scrypt_key:
             raise Exception('You need to call .init() for first')
 
         elif not isinstance(edata, bytes):
             raise Exception('edata must be bytes')
         else:
             iv = edata[-16:]; edata = edata[:-16] # LAST 16 BYTES OF ENCRYPTED DATA IS IV !
-            aes_cbc = Decrypter(AESModeOfOperationCBC(self._password_hash, iv))
+            aes_cbc = Decrypter(AESModeOfOperationCBC(self._scrypt_key, iv))
             decrypted = aes_cbc.feed(edata); decrypted += aes_cbc.feed()
             try:
                 return strip_PKCS7_padding(decrypted)
             except ValueError:
                 return decrypted # no padding
-                
+
 class TelegramAccount:
     def __init__(self, phone_number: str=None, session: str=None):
         self._API_ID = 1770281
@@ -169,7 +145,7 @@ class TelegramAccount:
     async def logout(self):
         return await self._TelegramClient.log_out()
 
-    async def accept_login_token(self, token: 'base64') -> None:
+    async def accept_login_token(self, token: 'base64urlsafe') -> None:
         await self._TelegramClient(AcceptLoginTokenRequest(urlsafe_b64decode(token)))
 
     async def request_change_phone_code(self, new_number: str) -> str:
@@ -202,7 +178,7 @@ class TelegramAccount:
         backup_death_at = current_time + 5_356_800
 
         backup_data = [
-            b64encode(tgback_aes._password_hash).decode(),
+            b64encode(tgback_aes._scrypt_key).decode(),
             self._TelegramClient.session.save(), str(backup_death_at),
             b64encode(user.username.encode()).decode(),
             str(user.id), b64encode(user.last_name.encode()).decode()
@@ -301,7 +277,7 @@ def join_restored(encoded_restored: list) -> str:
     return '|'.join(encoded_restored)
 
 def encrypt_restored(encoded_restored: str) -> bytes:
-    tgback_aes = TgbackAES('')
+    tgback_aes = TgbackAES(b'no_password')
     tgback_aes.init(b64decode(encoded_restored[0]))
     return tgback_aes.encrypt(join_restored(encoded_restored))
 
@@ -325,5 +301,5 @@ def scanqrcode(qrcode_path: str) -> bytes:
     try:
         return pyzbar.decode(Image.open(qrcode_path))[0].data.rstrip()
     except:
-        image = ImageOps.invert(Image.open(qrcode_path).convert('RGB')) 
+        image = ImageOps.invert(Image.open(qrcode_path).convert('RGB'))
         return pyzbar.decode(image)[0].data.rstrip() # If dark theme and inverted QR colors
