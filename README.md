@@ -34,11 +34,11 @@
  ## Backup creation
   To create a backup you need to select **first mode**
 
-  ![main page](https://telegra.ph/file/e36fad83651ef88e38c0f.png)
+  ![main page](https://telegra.ph/file/31b9e0a1eedf961ea58fd.png)
 
   And choose the way you will create it.
 
-  ![backup](https://telegra.ph/file/6cec875d76ccfb88fdff7.png)
+  ![backup](https://telegra.ph/file/48bdba40df905cc80f1e3.png)
 
   You can enter everything manually, or create a special `tgback-config` file. If the first method is inconvenient for you, create a text file and fill it out using this template:
   ```
@@ -46,7 +46,7 @@
   ```
   Next, you will need to enter the code that Telegram will send you. If this doesn't happen, then you can request the code again. After three attempts, Telegram will **call you** and the robot will dictate it.
 
-  ![request_code](https://telegra.ph/file/119791ec5e3e0a31fed6d.png)
+  ![requestcode](https://telegra.ph/file/e78ce4e40516c3adb28bf.png)
 
 After all operations, you will receive a QR code and `.tgback` file. Please **check your backups** for validity for first.
 
