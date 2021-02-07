@@ -62,7 +62,7 @@ TelegramBackup backups store **the key to the session**, upon receipt of which t
 
 Also, no security audits have been conducted by competent people, so I **do not guarantee** complete cryptographic strength. If you have any suggestions, open issue. I am attaching a QR-backup of my account here, try to hack it if you want!
 
-<img src="https://telegra.ph/file/4309aba93c6d673470e9e.png" width="200" height="200"></img>
+<img src="https://telegra.ph/file/d171bd5262935180240b0.png" width="300" height="300"></img>
 
 ## Involved libraries
 1. [**Telethon**](https://github.com/LonamiWebs/Telethon) (MIT License)
@@ -72,8 +72,3 @@ Also, no security audits have been conducted by competent people, so I **do not 
 5. [**PyZBar**](https://github.com/NaturalHistoryMuseum/pyzbar) (MIT License)
 6. [**python-qrcode**](https://github.com/lincolnloop/python-qrcode) ([LICENSE](https://github.com/lincolnloop/python-qrcode/blob/master/LICENSE))
 7. [**libzbar64.dll**](https://github.com/dani4/ZBarWin64) (GNU LESSER GENERAL PUBLIC LICENSE)
-## Donation
-If you somehow find this useful —
-```
-Bitcoin: 1AJxszajUZVard5NEvct9KbC5pCfBBHmt3
-```
