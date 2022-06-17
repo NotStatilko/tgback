@@ -1,10 +1,9 @@
-# TelegramBackup updates to version 4.0!
+# TelegramBackup updates to version 4.1!
 ## What's new?
 
-1. **Scrypt**. Now scrypt is used for generating keys from passwords. Scrypt in Tgback uses 1GB of RAM, so be careful.
+*We removed ability to sign-in via screenshoting Login-QR.*
 
-2. **TgbackAES**. Now TgbackAES generates IV on moment of encryption, not of initialization.
+It works not as good as was expected before. 
+Now you can get a login codes right in TGBACK. 
 
-3. **Help page**. Now you can get help and F.A.Q directly in tgback.
-
-###### _Backups of the new version **isn't** compatible with the old ones backups of tgback v3.X_
+See `2->X->3` mode.
