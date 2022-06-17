@@ -19,27 +19,29 @@ from base64 import b64encode, b64decode, urlsafe_b64decode
 from telethon import TelegramClient
 from telethon.tl.types import CodeSettings
 from telethon.sessions import StringSession
-from telethon.errors import (
-    PhoneNumberInvalidError, SessionPasswordNeededError
-)
+
 from telethon.tl.functions.account import (
     ChangePhoneRequest, SendChangePhoneCodeRequest
 )
-from telethon.tl.functions.auth import (
-    ResendCodeRequest, AcceptLoginTokenRequest
+from telethon.errors import (
+    PhoneNumberInvalidError, SessionPasswordNeededError
 )
+from telethon.tl.functions.auth import ResendCodeRequest
+
 from reedsolo import RSCodec
 
 from pyaes import AESModeOfOperationCBC, Encrypter, Decrypter
 from pyaes.util import append_PKCS7_padding, strip_PKCS7_padding
 
-VERSION = 'v4.0'
+
+VERSION = 'v4.1'
 TelegramClient.__version__ = VERSION
 
 RSC = RSCodec(222)
 
-DEFAULT_SALT = b'\x82\xa1\x93<Zk2\x8b\x8ah|m\x04YC\x14\x97\xc4\nx\x14E?\xffmY\xa4\x9a*8\xc2\xb2'
-
+DEFAULT_SALT = bytes.fromhex(
+    '82a1933c5a6b328b8a687c6d0459431497c40a7814453fff6d59a49a2a38c2b2'
+)
 class TgbackAES:
     def __init__(self, password: bytes):
         if not password:
@@ -106,17 +108,19 @@ class TelegramAccount:
     def __init__(self, phone_number: str=None, session: str=None):
         self._API_ID = 1770281
         self._API_HASH = '606e46d3d4a5bc4a9813e95add1bfb01'
+        
         self._phone_number = phone_number
+
         self._TelegramClient = TelegramClient(
             StringSession(session), self._API_ID, self._API_HASH
         )
         self.__notify = (
             '''Your {5}backup has been {0}!\n\nRemember that '''
-            '''**every two months** it needs to be updated, otherwise you will '''
+            '''**every two months** it needs to be refreshed, otherwise you will '''
             '''**lose access** to `{1}`. I created a scheduled message for '''
             '''you a week before the time expires, you will be automatically '''
-            '''notified and will have time to update.\n\n'''
-            '''`@ {2}:  {3}`\n`@ Will off: {4}`\n`@ Telegram Backup {6}`'''
+            '''notified and will have time to refresh it.\n\n'''
+            '''`@ {2}:  {3}`\n`@ Will off: {4}`\n`@ TGBACK {6}`'''
         )
     @staticmethod
     def __prepare_user_entity(entity):
@@ -144,9 +148,6 @@ class TelegramAccount:
 
     async def logout(self):
         return await self._TelegramClient.log_out()
-
-    async def accept_login_token(self, token: 'base64urlsafe') -> None:
-        await self._TelegramClient(AcceptLoginTokenRequest(urlsafe_b64decode(token)))
 
     async def request_change_phone_code(self, new_number: str) -> str:
         request = await self._TelegramClient(SendChangePhoneCodeRequest(
@@ -301,5 +302,6 @@ def scanqrcode(qrcode_path: str) -> bytes:
     try:
         return pyzbar.decode(Image.open(qrcode_path))[0].data.rstrip()
     except:
+        # If dark theme and inverted QR colors
         image = ImageOps.invert(Image.open(qrcode_path).convert('RGB'))
-        return pyzbar.decode(image)[0].data.rstrip() # If dark theme and inverted QR colors
+        return pyzbar.decode(image)[0].data.rstrip() 
