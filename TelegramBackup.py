@@ -141,7 +141,10 @@ async def main():
 
                     '''We will save a data that is enough to gain A FULL ACCESS TO YOUR TELEGRAM ACCOUNT!\n'''
                     '''While the developer DOESN\'t transfer any of your private data (sources: bit.ly/tgback)\n'''
-                    '''any of other "bad peoples" can make an app from codebase that will make a bad things.\n\n'''
+                    '''any of other "bad peoples" can make an app from codebase that will make a bad things.\n'''
+                    '''Please note that connected TGBACK session SHOULDN'T be active/online from time you\n'''
+                    '''refreshed it. If you found some suspicious activity then IMMEDIATELY disconnect it!\n'''
+                    '''This can be easily done via TGBACK/Telegram(Settings->Devices->Select TGBACK->Disconnect)\n\n'''
 
                     '''Please, get the .EXE file or build ONLY from the official sources: \n'''
                     '''    1. https://github.com/NotStatilko/tgback\n'''
@@ -152,10 +155,12 @@ async def main():
                     '''bruteforce, but still not impossible. An author ISN\'T a professional crypto-man, so be\n'''
                     '''careful. If you\'re aware what is AES / Scrypt and have a time, - then, please, check sources\n'''
                     '''and write me (t.me/not_statilko, or email: thenonproton@pm.me) if you found any vulnerability.\n\n'''
+                    
+                    '''There was not any security-related reports up to this day. Just use TGBACK correctly.\n\n'''
 
-                    '''Regards. Don\'t trust anyone. 2019.'''
+                    '''Regards. Don\'t trust anyone. 2019-2022, Non.'''
                 )
-                input('\n@ Press Enter to exit ')
+                input('\n\n@ Press Enter to exit ')
 
             if selected_section == '1':
                 while True:
