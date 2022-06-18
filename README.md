@@ -1,36 +1,36 @@
-# TelegramBackup v4.0
+# TelegramBackup v4.1
 ######  _Don't forget to look at [changelog](CHANGELOG.md)!_
 
-**TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram, you will **not be able** to log into your account if you lose access to the phone number. **Tgback** provides the ability to create an _alternative session_ (as if you were logging in from another device) and restore account with TelegramDesktop or change the number on which the account is linked.
+**TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram, you will **not be able** to log into your account if you lose access to the phone number. **Tgback** provides the ability to create an _alternative session_ (as if you were logging in from another device) and get login code or change the number on which the account is linked.
 
 **TelegramBackup** produces a special `.tgback` file as well as a QR code - both are your backup. You can choose what is more convenient for you to store, as `.tgback` and a QR code represent **the same** session. For encryption of backups, `AES-256/CBC` is used with a [scrypt](https://en.wikipedia.org/wiki/Scrypt) key. 
 
  ## Download and setting
  ### Windows
-  It's no executable for Windows for now because i destroyed this piece of ... you know. I will publish executable as soon as I have access to the Windows. Please check official [tgback channel](https://t.me/nontgback). It can be already here (check last commits).
+ You can download builds from the official [TGBACK Telegram channel](https://t.me/nontgback). 
  ### Linux and making Windows executable
-  If you want to make **TelegramBackup** then you need to install all dependencies. For the program to work correctly, you need to have [Python 3.6+](https://python.org), [ZBar](http://zbar.sourceforge.net) and [pip](https://pypi.org/project/pip/) (it can be already installed with Python 3.6+, type `pip` or `pip3` in your terminal/cmd). After that, run:
+  If you want to make **TelegramBackup** then you need to install all dependencies. For the program to work correctly, you need to have [Python 3.6+](https://python.org), [ZBar](http://zbar.sourceforge.net), [pip](https://pypi.org/project/pip/) (it can be already installed with Python 3.6+, type `pip` or `pip3` in your terminal/cmd) and Visual C++ Build Tools (Windows only). After that, run:
   ```bash
-  git clone https://github.com/NotStatilko/tgback; cd tgback
-  pip3 install -r requirements.txt || pip install -r requirements.txt
-  python3 TelegramBackup.py || python TelegramBackup.py
+  git clone https://github.com/NotStatilko/tgback
+  cd tgback; pip install -r requirements.txt
+  python TelegramBackup.py # Run Program
   ```
   If you want to make executable on Linux or Windows then install `pyinstaller`
   ```
-  pip3 install pyinstaller || pip install pyinstaller
+  pip install pyinstaller
   ```
   Go to `tgback/pyinstaller` folder and run
   ```
   pyinstaller TelegramBackup.spec
   ```
-  You will need to enter path to tgback folder, just copy it from folder info. After making TelegramBackup executable check it if it works and after  that you can remove all tgback-related stuff (ZBar [if you not on linux], Python, etc).
+  You will need to enter path to tgback folder, just copy it from folder info. After making TelegramBackup executable check it if it works and after that you can remove all tgback-related stuff (ZBar [if you not on linux], Python, etc).
 
  #### Linux
- If you want to use tgback on Linux then to QR-features you need to have **libzbar0** (or analogue) onto your machine.
+ If you want to use tgback on Linux with QR-features then you will need to have a **libzbar0** (or analogue) onto your machine.
  ```
+ # Debian / Ubuntu
  sudo apt install libzbar0
  ```
-
  ## Backup creation
   To create a backup you need to select **first mode**
 
