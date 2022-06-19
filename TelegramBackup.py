@@ -483,18 +483,21 @@ async def main():
                                         print(
                                             '''% We scan here your dialogue with the official\n'''
                                             '''  Telegram userbot, which give you login codes\n\n'''
-                                            '''  Try to sign-in, the login code should appear here\n\n'''
+                                            '''  Try to sign-in, the code should appear here\n\n'''
                                             '''^ Press Ctrl+C to stop listening and return back\n\n'''
                                         )
                                         counter = 0
                                         async for message in client.iter_messages(tg_official):
+                                            if not message.message:
+                                                continue
+
                                             if counter == 2: 
                                                 break # We show only 2 last messages
                                             counter += 1
                                             
                                             msg_text = message.message.replace('\n\n','\n')
 
-                                            print('# Telegram,', str(message.date))
+                                            print('# Message:', str(message.date))
                                             print(' ', msg_text.replace('\n','\n  '), '\n')
 
                                         sleep(5)
