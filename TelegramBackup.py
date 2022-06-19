@@ -248,9 +248,14 @@ async def main():
                     elif selected_section == '2': # Config file
                         clear_terminal()
                         config = input('> Path to tgback-config file: ')
+
                         if not os.path.exists(config):
                             clear_terminal()
                             input('@: ! Can\'t open config file. Check your path. ')
+
+                        elif os.path.isdir(config):
+                            clear_terminal()
+                            input('@: ! Specified path is a directory, not a file. ')
                         else:
                             config_template = (
                                 '''phone_number; telegram_password; '''
@@ -357,6 +362,11 @@ async def main():
                 if not os.path.exists(path_to_tgback):
                     clear_terminal()
                     input(f'@: ! Can\'t find .tgback {backup_type}. Check entered path.')
+                    await main()
+
+                elif os.path.isdir(path_to_tgback):
+                    clear_terminal()
+                    input('@: ! Specified path is a directory, not a file. ')
                     await main()
                 else:
                     while True:
@@ -568,7 +578,11 @@ async def main():
 
     except ConnectionError:
         clear_terminal()
-        input('@: ! Unable to connect with Telegram servers. Check your internet connection.')
+        print(
+            '''@: ! It seems that Telegram servers is unreachable.\n'''
+            '''     Please check your internet connection.\n'''
+        )
+        input('@ Press Enter to return ')
         await main()
 
     except Exception as e:
@@ -582,7 +596,7 @@ async def main():
             '''I will fix it as soon as possible. Thanks in advance!\n\n'''
             f'''Short error: {e}\n'''
         )
-        input('@ Press Enter to return')
+        input('@ Press Enter to return ')
         await main()
 
 
