@@ -472,10 +472,6 @@ async def main():
                                     clear_terminal()
                                     input('\n\n@: ! Backup was disconnected.')
 
-                            elif selected_section == '3' and not qr_available:
-                                clear_terminal()
-                                input('@: ! Can\'t reach ZBar or PIL. Please check installed dependecies. ')
-
                             elif selected_section == '3':
                                 client = account._TelegramClient
 
