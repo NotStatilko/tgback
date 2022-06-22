@@ -5,7 +5,7 @@
 
 **TelegramBackup** produces a special `.tgback` file as well as a QR code - both are your backup. You can choose what is more convenient for you to store, as `.tgback` and a QR code represent **the same** session. For encryption of backups, **AES-256-CBC** is used with a [scrypt](https://en.wikipedia.org/wiki/Scrypt) key. 
 
- ## Download and setting
+ ## Download & Install
  ### Windows
  You can download builds from the official [TGBACK Telegram channel](https://t.me/nontgback). 
  ### Linux and making Windows executable
