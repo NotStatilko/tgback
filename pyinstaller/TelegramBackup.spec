@@ -1,22 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-from os.path import exists, join as path_join
+from os.path import join as path_join
 
 block_cipher = None
 
-while True:
-    project_path = input('\n> Path to project folder (e.g: C:\\Users\\user\\Desktop\\tgback): ')
-    if not exists(project_path):
-        print('@: ! Invalid path!')
-    else:
-        print(); break
-    
-a = Analysis([path_join(project_path, 'TelegramBackup.py')],
+a = Analysis([path_join('..', 'app.py')],
              pathex=[project_path],
              binaries=[
                 (path_join('dll','libiconv-2.dll'),'.'),
                 (path_join('dll','libzbar-32.dll'),'.'),
-                (path_join('dll','libzbar-64.dll'),'.')
             ],
              datas=[],
              hiddenimports=[],
