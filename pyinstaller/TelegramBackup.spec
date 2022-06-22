@@ -5,7 +5,7 @@ from os.path import join as path_join
 block_cipher = None
 
 a = Analysis([path_join('..', 'app.py')],
-             pathex=[project_path],
+             pathex=['..'],
              binaries=[
                 (path_join('dll','libiconv-2.dll'),'.'),
                 (path_join('dll','libzbar-32.dll'),'.'),
