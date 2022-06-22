@@ -1,6 +1,0 @@
-pillow==9.0.0
-pyaes==1.6.1
-reedsolo==1.5.3
-pyzbar==0.1.8
-telethon==1.24.0
-qrcode==6.1
