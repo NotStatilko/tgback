@@ -122,12 +122,7 @@ def app():
         if selected_section and selected_section in '0123':
             break
 
-    return_to_main = False
-
     while True:
-        if return_to_main:
-            raise FlushToStartPage 
-
         if selected_section == '0':
             clsprint(
                 '''  The TGBACK (a.k.a) TelegramBackup is a simple CMD app\n'''
@@ -338,12 +333,12 @@ def app():
 
                                 clsprint()
                                 input(f'@ Successfully encrypted and backuped! ({filename})')
-
-                                return_to_main = True; break
+                                
+                                raise FlushToStartPage
 
                         except ConnectionError:
                             raise ConnectionError
-                        except OSError:
+                        except:
                             clsprint()
                             input(
                                  '''@: ! Something wrong in your config file.\n\n'''
