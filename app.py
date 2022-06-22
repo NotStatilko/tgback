@@ -1,17 +1,23 @@
+#!/usr/bin/python3
+
 print('\n' * 100 + '@ TGBACK is loading...')
 
 import os.path
 
-# TODO
 from tools import (
-    restore, VERSION, QR_AVAILABLE, TelegramAccount,
-    make_scrypt_key, QR_ERROR, scanqrcode
+    QR_ERROR, scanqrcode,
+    restore, VERSION, QR_AVAILABLE, 
+    TelegramAccount, make_scrypt_key
 )
 from sys import platform
 from getpass import getpass
 from traceback import print_exc
 from os import system as os_system
+
+from datetime import datetime
 from time import ctime, strftime, sleep
+
+from pickle import UnpicklingError
 
 from telethon.errors.rpcerrorlist import (
     AuthKeyUnregisteredError, PhoneCodeInvalidError,
@@ -23,7 +29,10 @@ from telethon.tl.functions.contacts import (
     ImportContactsRequest, DeleteContactsRequest
 )
 from telethon.tl.types import InputPhoneContact
+from telethon.utils import logging
 
+# We really don't need this here
+logging.disable()
 
 if platform.startswith('win'):
     clear_command = 'cls'
@@ -40,7 +49,7 @@ def clsprint(*args, **kwargs):
 class FlushToStartPage(Exception):
     """
     Will be used as navigation flag. 
-    When raised -> return to start page.
+    Raised -> return to start page.
     """
 
 class ExitApp(Exception):
@@ -77,7 +86,7 @@ def app():
                 '''>> 2) I haven\'t recieved code\n'''
                 '''>>> 3) Return to main page\n'''
             )
-            mode = input('\n@ Input: ')
+            mode = input('@ Input: ')
 
             if mode == '1':
                 clsprint()
@@ -97,8 +106,9 @@ def app():
 
     while True:
         about_qr = '' if QR_AVAILABLE else '(not available)'
+
         clsprint(
-           f''' - TGBACK {VERSION} (bit.ly/tgback) -\n\n'''
+           f''' - TGBACK v{VERSION} (bit.ly/tgback) -\n\n'''
 
             '''> 0) Quick help & What it is?\n'''
             '''>> 1) Backup Telegram account\n'''
@@ -108,10 +118,12 @@ def app():
             '''\n\n% Press Ctrl+C to back here'''
         )
         selected_section = input('\n@ Input: ')
+
         if selected_section and selected_section in '0123':
             break
 
     return_to_main = False
+
     while True:
         if return_to_main:
             raise FlushToStartPage 
@@ -124,9 +136,10 @@ def app():
                 '''  an access to a phone number (SIM card) it linked. If you\n'''
                 '''  will lost your SIM, then you lost your Telegram account.\n\n'''
 
-                '''  This (seems to me a) problem can be fixed in two ways:\n'''
+                '''  This (seems to me a) problem can be fixed in a three ways:\n'''
                 '''      1. You can make an extra log-in on your other device\n'''
-                '''      2. You can use TGBACK, and it will save & encrypt session\n\n'''
+                '''      2. You can backup TelegramDesktop's TDATA folder (Google it)\n'''
+                '''      3. You can use TGBACK, and it will save & encrypt session\n\n'''
 
                 '''  If any session (device logged-in) is linked to your account, then\n'''
                 '''  you will receive a login code from official Telegram userbot, so\n'''
@@ -142,34 +155,34 @@ def app():
                 '''  After backup creation you will receive a *.tgback file and an image with QR code,\n'''
                 '''  both encapsulates an identical data in encrypted form, so you can save any.\n\n'''
 
-                '''  You will need to *refresh it* every two months, so Telegram will not disconnect it\n'''
-                '''  due the inactivity. Recent Telegram update showed that this limit, probably, can\n'''
-                '''  be extended up to five-six months, but i don\'t want to risk of a peoples data, so 2.\n\n'''
+                '''  You will need to *refresh it* every three months, so Telegram will not disconnect it\n'''
+                '''  due the inactivity. One of Telegram update showed that this limit, probably, can\n'''
+                '''  be extended up to five-six months, but i don\'t want to risk of a peoples data, so 3.\n\n'''
 
                 '''!!! WARNING !!!\n\n'''
 
-                '''We will save a data that is enough to gain A FULL ACCESS TO YOUR TELEGRAM ACCOUNT!\n'''
-                '''While the developer DOESN\'t transfer any of your private data (sources: bit.ly/tgback)\n'''
-                '''any of other "bad peoples" can make an app from codebase that will make a bad things.\n'''
-                '''Please note that connected TGBACK session SHOULDN'T be active/online from time you\n'''
-                '''refreshed it. If you found some suspicious activity then IMMEDIATELY disconnect it!\n'''
-                '''This can be easily done via TGBACK/Telegram(Settings->Devices->Select TGBACK->Disconnect)\n\n'''
+                '''  We will save a data that is enough to gain A FULL ACCESS TO YOUR TELEGRAM ACCOUNT!!\n\n'''
+                '''  While the developer DOESN'T transfer any of your private data (sources: bit.ly/tgback)\n'''
+                '''  the other "bad guys" can make an app from codebase that will make an awful things.\n\n'''
+                '''  Please note that connected TGBACK session SHOULDN'T be active/online from time you\n'''
+                '''  refreshed it. If you found some suspicious activity then IMMEDIATELY disconnect it!\n'''
+                '''  This can be easily done via TGBACK/Telegram(Settings->Devices->Select TGBACK->Disconnect)\n\n'''
 
-                '''Please, get the .EXE file or build ONLY from the official sources: \n'''
-                '''    1. https://github.com/NotStatilko/tgback\n'''
-                '''    2. https://t.me/nontgback (dev. channel)\n\n'''
+                '''  Please, get the .EXE file or build ONLY from the official sources: \n'''
+                '''      1. https://github.com/NotStatilko/tgback\n'''
+                '''      2. https://t.me/nontgback (dev. channel)\n\n'''
 
-                '''Use ONLY strong passwords. This app programmed in a way that for any password generation\n'''
-                '''attempt you will need to give a 1GB of RAM for about a second-two, so it VERY hard to\n'''
-                '''bruteforce, but still not impossible. An author ISN\'T a professional crypto-man, so be\n'''
-                '''careful. If you\'re aware what is AES / Scrypt and have a time, - then, please, check sources\n'''
-                '''and write me (t.me/not_statilko, or email: thenonproton@pm.me) if you found any vulnerability.\n\n'''
+                '''  Use STRONG passwords. This app programmed in a way that for any password generation\n'''
+                '''  attempt you will need to give a 1GB of RAM for about a second-two, so it's VERY hard to\n'''
+                '''  bruteforce, but still not impossible. An author ISN'T a professional crypto-man, so be\n'''
+                '''  careful. If you\'re aware what is AES / Scrypt and have a time, - then, please, check sources\n'''
+                '''  and write me (t.me/not_statilko, or email: thenonproton@pm.me) if you found any vulnerability.\n\n'''
                 
-                '''There was not any security-related reports up to this day. Just use TGBACK correctly.\n\n'''
+                '''  There wasn't any security-related reports up to this day. Just use TGBACK correctly.\n\n'''
 
-                '''Regards. Don\'t trust anyone. 2019-2022, Non.'''
+                '''** Regards. Don't trust, verify. 2019-2022, Non.'''
             )
-            input('\n\n@ Press Enter to exit ')
+            input('\n@ Press Enter to return ')
 
         if selected_section == '1':
             while True:
@@ -210,16 +223,18 @@ def app():
                                 c_tgback_password = getpass('>> Re-enter password (hidden): ')
 
                                 if tgback_password != c_tgback_password:
-                                    clsprint('@: ! Password mismatch! Try again.\n')
+                                    input('@: ! Password mismatch! Try again.\n')
                                 elif not tgback_password:
-                                    clsprint('@: ! Password can\'t be empty.\n')
+                                    input('@: ! Password can\'t be empty.\n')
                                 else:
                                     break
 
-                            clsprint('@ Creating key with your password...')
+                            clsprint('@ Creating key & making backup...')
 
-                            filename = account.backup(tgback_password, tgback_filename)
-
+                            filename = account.backup(
+                                tgback_password.encode(), 
+                                tgback_filename
+                            )
                             clsprint()
                             input(f'@ Successfully encrypted and backuped! ({filename})')
                             raise FlushToStartPage
@@ -289,7 +304,7 @@ def app():
                             input(
                                  '''@: ! It\'s not a tgback-config file\n\n'''
                                 f'''@: ? Correct format: "{config_template}"\n\n'''
-                                 '''@: ? Use manual input if your password contain ";".'''
+                                 '''@: ? Use manual input if your password contains ";" symbol.\n'''
                             )
                             raise FlushToStartPage
                         except TypeError:
@@ -318,23 +333,22 @@ def app():
                                 raise FlushToStartPage
 
                             else:
-                                clsprint('@ Creating key with your password...')
-                                filename = account.backup(config[2],config[3])
-                                
+                                clsprint('@ Creating key & making backup...')
+                                filename = account.backup(config[2].encode(), config[3])
+
                                 clsprint()
                                 input(f'@ Successfully encrypted and backuped! ({filename})')
+
                                 return_to_main = True; break
 
                         except ConnectionError:
-                            clsprint()
-                            input('@: ! Unable to connect with Telegram servers. Check your internet connection.')
-                            raise FlushToStartPage
-                        except:
+                            raise ConnectionError
+                        except OSError:
                             clsprint()
                             input(
                                  '''@: ! Something wrong in your config file.\n\n'''
                                 f'''@: ? Correct format: "{config_template}"\n\n'''
-                                 '''@: ? If your password contain ";", please, use manual input.'''
+                                 '''@: ? If your password contain ";", please, use manual input.\n'''
                             )
                 elif selected_section == '3':
                     raise FlushToStartPage
@@ -346,13 +360,12 @@ def app():
                     '''>> 2) Use .tgback file\n'''
                     '''>>> 3) Back to main page\n'''
                 )
-                open_mode = input('\n@ Input: ')
+                open_mode = input('@ Input: ')
 
                 if open_mode == '1' and not QR_AVAILABLE:
                     clsprint()
                     input('@: ! Can\'t reach ZBar or PIL. Please check installed dependecies. ')
                     raise FlushToStartPage
-
 
                 if open_mode and open_mode in '123':
                     clsprint(); break
@@ -380,33 +393,41 @@ def app():
                     if not tgback_password:
                         clsprint()
                         input('@: ! Password can\'t be empty. Try again or press Ctrl+C.')
-                    else: break
+                    else: 
+                        break
                 
                 clsprint('@ Creating key with your password...')
-
                 try:
-                    restored = restore(path_to_tgback, tgback_password, is_qr=is_qr)
-                    assert len(restored) == 6
-                except (AssertionError, ValueError, ReedSolomonError):
-                    clsprint()
-                    input('\n@: ! Incorrect Password or corrupted backup. ')
-                    raise FlushToStartPage
+                    restored = restore(path_to_tgback, tgback_password.encode(), is_qr=is_qr)
                 except (IndexError, QR_ERROR):
                     clsprint()
-                    input('''\n@: ! Impossible to read QR code. '''
-                          '''Are you sure that image is correct and in good quality?''')
+                    input(
+                        '''\n@: ! Can't read QR code you specified.\n'''
+                        '''     Are you sure that image is QR and good quality?\n'''
+                    )
+                    raise FlushToStartPage
+                except:
+                    clsprint()
+                    input('\n@: ! Incorrect password or corrupted backup. ')
                     raise FlushToStartPage
                 else:
-                    account = TelegramAccount(session=restored[1])
-                    account.connect()
+                    try:
+                        account = TelegramAccount(session=restored['session'])
+                        account.connect()
+
+                        user = account.TelegramClient.get_me()
+                        name = f'@{user.username}' if user.username else user.first_name
+                    except AttributeError:
+                        clsprint()
+                        input('@: ! Backup was disconnected. ')
+                        raise FlushToStartPage
 
                     while True:
                         return_to_page = False
-                        about_qr = '' if QR_AVAILABLE else '(not available)'
 
                         clsprint(
-                            f'''% Hello, {restored[3] + ' ' + restored[5]}! (id{restored[4]})\n'''
-                            f'''@ Backup valid until {ctime(float(restored[2]))}\n\n'''
+                            f'''% Hello, {name}! (+{user.phone})\n'''
+                            f'''@ Backup valid until {ctime(restored['death_at'])}\n\n'''
 
                             '''> 1) Change phone number of account\n'''
                             '''>> 2) Refresh .tgback backup session\n'''
@@ -416,6 +437,7 @@ def app():
                             '''>>>>>> 6) Return to main page'''
                         )
                         selected_section = input('\n@ Input: ')
+
                         if selected_section == '1':
                             clsprint()
 
@@ -478,25 +500,27 @@ def app():
                         elif selected_section == '2':
                             try:
                                 clsprint('@ Refreshing...')
-                                account.refresh_backup(restored, path_to_tgback)
+
+                                path_to_tgback = path_to_tgback.rstrip('.tgback')
+                                path_to_tgback = path_to_tgback.rstrip('.tgback.png')
+
+                                account.backup(
+                                    tgback_password.encode(), 
+                                    path_to_tgback,
+                                    refresh=True
+                                )
                             except:
                                 clsprint()
                                 input('\n\n@: ! Backup was disconnected.')
 
-                        elif selected_section == '3' and not QR_AVAILABLE:
-                            clsprint()
-                            input('@: ! Can\'t reach ZBar or PIL. Please check installed dependecies. ')
-
                         elif selected_section == '3':
-                            client = account._TelegramClient
-
                             tg_official = InputPhoneContact(
                                 client_id=0, phone='+42777', 
                                 first_name='.', last_name='.'
                             )
-                            client(ImportContactsRequest([tg_official]))
-                            tg_official = client.get_entity('+42777')
-                            client(DeleteContactsRequest(id=[tg_official.id]))
+                            account.TelegramClient(ImportContactsRequest([tg_official]))
+                            tg_official = account.TelegramClient.get_entity('+42777')
+                            account.TelegramClient(DeleteContactsRequest(id=[tg_official.id]))
 
                             while True:
                                 try:
@@ -507,7 +531,7 @@ def app():
                                         '''^ Press Ctrl+C to stop listening and return back\n\n'''
                                     )
                                     counter = 0
-                                    for message in client.iter_messages(tg_official):
+                                    for message in account.TelegramClient.iter_messages(tg_official):
                                         if not message.message:
                                             continue
 
@@ -516,9 +540,10 @@ def app():
                                         counter += 1
                                         
                                         msg_text = message.message.replace('\n\n','\n')
+                                        msg_time = datetime.fromtimestamp(message.date.timestamp())
 
-                                        clsprint('# Message:', str(message.date))
-                                        clsprint(' ', msg_text.replace('\n','\n  '), '\n')
+                                        print('# Message:', msg_time.ctime())
+                                        print(' ', msg_text.replace('\n','\n  '), '\n')
 
                                     sleep(5)
                                 except KeyboardInterrupt:
@@ -526,6 +551,7 @@ def app():
 
                         elif selected_section == '4':
                             clsprint('@ To change password you need at least 1GB free of RAM.\n')
+
                             new_password = getpass('> Your new password (hidden): ')
                             c_new_password = getpass('>> Confirm password (hidden): ')
 
@@ -536,12 +562,16 @@ def app():
                                 clsprint()
                                 input('@: ! Password can\'t be empty. Try again.')
                             else:
-                                clsprint('@ Creating key with your password...')
-                                restored[0] = make_scrypt_key(new_password.encode())
+                                clsprint('@ Ok. Updating backup...')
 
-                                clsprint('@ Refreshing...')
-                                account.refresh_backup(restored, path_to_tgback)
+                                path_to_tgback = path_to_tgback.rstrip('.tgback')
+                                path_to_tgback = path_to_tgback.rstrip('.tgback.png')
 
+                                account.backup(
+                                    new_password.encode(), 
+                                    path_to_tgback,
+                                    refresh=True
+                                )
                                 clsprint()
                                 input('@: Your password has been successfully changed! ')
 
@@ -553,9 +583,11 @@ def app():
                                 )
                                 confirm = input('@ Input: ')
                                 if confirm == '1':
-                                    clsprint('''% No, seriously. After this operation, you will no longer be '''
-                                        '''able to change phone number/see codes through this backup.\n''')
-                                    clsprint('% Are you totally sure? Type "yes" or "no"\n')
+                                    clsprint(
+                                        '''% No, seriously. After this operation you will no longer be\n'''
+                                        '''  able to change phone number/see codes through this backup.\n'''
+                                    )
+                                    print('% Are you totally sure? Type "yes" or "no"\n')
                                     if input('@ Input: ').lower() == 'yes':
                                         clsprint()
                                         if account.logout():
@@ -593,7 +625,7 @@ def entry():
             input('@ Press Enter to return ')
 
         except ExitApp:
-            clsprint(); break 
+            clsprint('Thanks for using TGBACK! Bye!'); break 
 
         except Exception as e:
             print_exc(file=open('tgback.log','a'))
