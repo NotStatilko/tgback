@@ -218,8 +218,10 @@ def app():
                                 c_tgback_password = getpass('>> Re-enter password (hidden): ')
 
                                 if tgback_password != c_tgback_password:
+                                    clsprint()
                                     input('@: ! Password mismatch! Try again.\n')
                                 elif not tgback_password:
+                                    clsprint()
                                     input('@: ! Password can\'t be empty.\n')
                                 else:
                                     break
