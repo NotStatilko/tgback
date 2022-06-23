@@ -19,7 +19,9 @@
   git clone https://github.com/NotStatilko/tgback
   pip install ./tgback[QR] # Not a Pure-python, with QR
   # pip install ./tgback # Pure-python, no QR support
-  tgback # Run TGBACK app
+  ```
+  ```bash
+  tgback # Run installed TGBACK app
   ```
   If you want to make executable on Linux or Windows then install `pyinstaller`
   ```
