@@ -11,11 +11,12 @@
  ### Linux and making Windows executable
   If you want to make a **TelegramBackup** app then you need to install all dependencies. For the program to work correctly, you need to have [Python 3.7+](https://python.org), [ZBar](http://zbar.sourceforge.net) (for QR features, you may ignore it) and [pip](https://pypi.org/project/pip/) (it can be already installed with Python 3.7+, type `pip` or `pip3` in your terminal/cmd). After that, run:
   ```bash
-  # Install from PIP
-  pip install tgback
+  # You can install TGBACK from PIP
+  pip install tgback[QR] # Not a Pure-python, with QR
+  # pip install tgback # Pure-python, no QR support
   ```
   ```bash
-  # Install from GitHub with GIT by cloning repository
+  # Or install from GitHub with GIT by cloning repository
   git clone https://github.com/NotStatilko/tgback
   pip install ./tgback[QR] # Not a Pure-python, with QR
   # pip install ./tgback # Pure-python, no QR support
