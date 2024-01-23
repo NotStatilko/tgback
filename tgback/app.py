@@ -4,11 +4,6 @@ print('\n' * 100 + '@ TGBACK is loading...')
 
 import os.path
 
-from tools import (
-    QR_ERROR, scanqrcode,
-    restore, VERSION, QR_AVAILABLE, 
-    TelegramAccount, make_scrypt_key
-)
 from sys import platform
 from getpass import getpass
 from traceback import print_exc
@@ -31,6 +26,14 @@ from telethon.tl.functions.contacts import (
 from telethon.tl.types import InputPhoneContact
 from telethon.utils import logging
 
+from .tools import (
+    QR_ERROR, scanqrcode,
+    restore, QR_AVAILABLE,
+    TelegramAccount, make_scrypt_key
+)
+from .version import VERSION
+
+
 # We really don't need this here
 logging.disable()
 
@@ -48,7 +51,7 @@ def clsprint(*args, **kwargs):
 
 class FlushToStartPage(Exception):
     """
-    Will be used as navigation flag. 
+    Will be used as navigation flag.
     Raised -> return to start page.
     """
 
@@ -57,7 +60,7 @@ class ExitApp(Exception):
 
 def app():
     def request_confirmation_code(
-            request_func, phone: str, 
+            request_func, phone: str,
             account: TelegramAccount=None) -> tuple:
 
         request_code, code_hash = True, None
@@ -97,7 +100,7 @@ def app():
                 request_code = True
 
             elif mode == '3':
-                raise FlushToStartPage 
+                raise FlushToStartPage
 
             else:
                 request_code = False
@@ -172,7 +175,7 @@ def app():
                 '''  bruteforce, but still not impossible. An author ISN'T a professional crypto-man, so be\n'''
                 '''  careful. If you\'re aware what is AES / Scrypt and have a time, - then, please, check sources\n'''
                 '''  and write me (t.me/not_statilko, or email: thenonproton@pm.me) if you found any vulnerability.\n\n'''
-                
+
                 '''  There wasn't any security-related reports up to this day. Just use TGBACK correctly.\n\n'''
 
                 '''** Regards. Don't trust, verify. 2019-2022, Non.'''
@@ -211,7 +214,7 @@ def app():
                                     tgback_filename = input('> Backup filename: ')
                                 else:
                                     break
-                            
+
                             while True:
                                 clsprint('@ To create backup you need at least 1GB free of RAM.\n')
                                 tgback_password = getpass('> Backup password (hidden): ')
@@ -228,12 +231,12 @@ def app():
 
                             clsprint('@ Creating key & making backup...')
 
-                            filename = account.backup(
-                                tgback_password.encode(), 
+                            backup = account.backup(
+                                tgback_password.encode(),
                                 tgback_filename
                             )
                             clsprint()
-                            input(f'@ Successfully encrypted and backuped! ({filename})')
+                            input(f'@ Successfully encrypted and backuped! ({backup[0]})')
                             raise FlushToStartPage
 
                         except (KeyboardInterrupt, EOFError):
@@ -331,11 +334,11 @@ def app():
 
                             else:
                                 clsprint('@ Creating key & making backup...')
-                                filename = account.backup(config[2].encode(), config[3])
+                                backup = account.backup(config[2].encode(), config[3])
 
                                 clsprint()
-                                input(f'@ Successfully encrypted and backuped! ({filename})')
-                                
+                                input(f'@ Successfully encrypted and backuped! ({backup[0]})')
+
                                 raise FlushToStartPage
 
                         except ConnectionError:
@@ -390,9 +393,9 @@ def app():
                     if not tgback_password:
                         clsprint()
                         input('@: ! Password can\'t be empty. Try again or press Ctrl+C.')
-                    else: 
+                    else:
                         break
-                
+
                 clsprint('@ Creating key with your password...')
                 try:
                     restored = restore(path_to_tgback, tgback_password.encode(), is_qr=is_qr)
@@ -447,7 +450,7 @@ def app():
 
                                 try:
                                    code, code_hash = request_confirmation_code(
-                                       account.request_change_phone_code, 
+                                       account.request_change_phone_code,
                                        new_phone, account=account
                                    )
                                    account.change_phone(code, code_hash, new_phone)
@@ -501,18 +504,20 @@ def app():
                                 path_to_tgback = path_to_tgback.rstrip('.tgback')
                                 path_to_tgback = path_to_tgback.rstrip('.tgback.png')
 
-                                account.backup(
-                                    tgback_password.encode(), 
-                                    path_to_tgback,
-                                    refresh=True
+                                backup = account.backup(
+                                    tgback_password.encode(),
+                                    path_to_tgback, refresh=True
                                 )
+                                # Update backup data to correctly show
+                                # new BACKUP_DEATH_IN time
+                                restored = backup[1]
                             except:
                                 clsprint()
                                 input('\n\n@: ! Backup was disconnected.')
 
                         elif selected_section == '3':
                             tg_official = InputPhoneContact(
-                                client_id=0, phone='+42777', 
+                                client_id=0, phone='+42777',
                                 first_name='.', last_name='.'
                             )
                             account.TelegramClient(ImportContactsRequest([tg_official]))
@@ -532,10 +537,10 @@ def app():
                                         if not message.message:
                                             continue
 
-                                        if counter == 2: 
+                                        if counter == 2:
                                             break # We show only 2 last messages
                                         counter += 1
-                                        
+
                                         msg_text = message.message.replace('\n\n','\n')
                                         msg_time = datetime.fromtimestamp(message.date.timestamp())
 
@@ -559,13 +564,13 @@ def app():
                                 clsprint()
                                 input('@: ! Password can\'t be empty. Try again.')
                             else:
-                                clsprint('@ Ok. Updating backup...')
+                                clsprint('@ Updating backup...')
 
                                 path_to_tgback = path_to_tgback.rstrip('.tgback')
                                 path_to_tgback = path_to_tgback.rstrip('.tgback.png')
 
                                 account.backup(
-                                    new_password.encode(), 
+                                    new_password.encode(),
                                     path_to_tgback,
                                     refresh=True
                                 )
@@ -622,7 +627,7 @@ def entry():
             input('@ Press Enter to return ')
 
         except ExitApp:
-            clsprint('Thanks for using TGBACK! Bye!'); break 
+            clsprint('Thanks for using TGBACK! Bye!'); break
 
         except Exception as e:
             print_exc(file=open('tgback.log','a'))

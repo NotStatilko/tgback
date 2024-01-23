@@ -18,7 +18,7 @@ from time import time, ctime
 from datetime import timedelta
 
 from pickle import (
-    loads as pickle_loads, 
+    loads as pickle_loads,
     dumps as pickle_dumps
 )
 from itertools import cycle
@@ -39,18 +39,19 @@ from telethon.tl.functions.auth import ResendCodeRequest
 from pyaes import AESModeOfOperationCBC
 from pyaes.util import append_PKCS7_padding, strip_PKCS7_padding
 
-VERSION = '5.0'
+from .version import VERSION
+
 TelegramClient.__version__ = VERSION
 
 # Three months by default
 BACKUP_DEATH_IN = 8_040_000
 
 def make_scrypt_key(
-        password: bytes, 
-        salt: bytes, 
-        n: int=2**20, 
-        r: int=8, 
-        p: int=1, 
+        password: bytes,
+        salt: bytes,
+        n: int=2**20,
+        r: int=8,
+        p: int=1,
         dklen: int=32) -> bytes:
     """
     Will use 1GB of RAM by default.
@@ -64,16 +65,16 @@ def make_scrypt_key(
 class PyaesState:
     def __init__(self, key: bytes, iv: bytes):
         """
-        Class to wrap ``pyaes.AESModeOfOperationCBC`` 
-        
+        Class to wrap ``pyaes.AESModeOfOperationCBC``
+
         .. note::
-            You should use only ``encrypt()`` or 
+            You should use only ``encrypt()`` or
             ``decrypt()`` method per one object.
-        
+
         Arguments:
             key (``bytes``):
                 AES encryption/decryption Key.
-            
+
             iv (``bytes``):
                 AES Initialization Vector.
         """
@@ -81,7 +82,7 @@ class PyaesState:
             key = key, iv = iv
         )
         self.__mode = None # encrypt mode is 1 and decrypt is 2
-    
+
     def encrypt(self, data: bytes) -> bytes:
         """``data`` length must be divisible by 16."""
         if not self.__mode:
@@ -89,15 +90,15 @@ class PyaesState:
         else:
             if self.__mode != 1:
                 raise Exception('You should use only decrypt function.')
-        
+
         assert not len(data) % 16; total = b''
-        
+
         for _ in range(len(data) // 16):
             total += self._aes_state.encrypt(data[:16])
             data = data[16:]
-        
+
         return total
-    
+
     def decrypt(self, data: bytes) -> bytes:
         """``data`` length must be divisible by 16."""
         if not self.__mode:
@@ -105,20 +106,20 @@ class PyaesState:
         else:
             if self.__mode != 2:
                 raise Exception('You should use only encrypt function.')
-        
+
         assert not len(data) % 16; total = b''
-        
+
         for _ in range(len(data) // 16):
             total += self._aes_state.decrypt(data[:16])
             data = data[16:]
-        
+
         return total
 
 class TelegramAccount:
     def __init__(self, phone_number: str=None, session: str=None):
-        self._API_ID = 1770281
+        self._API_ID = 1770281 # (<V) DO NOT USE THESE!!!
         self._API_HASH = '606e46d3d4a5bc4a9813e95add1bfb01'
-        
+
         self._phone_number = phone_number
 
         self.TelegramClient = TelegramClient(
@@ -173,7 +174,7 @@ class TelegramAccount:
 
         current_time = time()
         backup_death_at = current_time + BACKUP_DEATH_IN
-        
+
         backup_dict = {
             'session' : self.TelegramClient.session.save(),
             'death_at': backup_death_at,
@@ -184,10 +185,10 @@ class TelegramAccount:
             append_PKCS7_padding(pickle_dumps(backup_dict))
         )
         backup_data = backup_salt + backup_iv + backup_data
-        
+
         with open(filename, 'wb') as f:
             f.write(backup_data)
-        
+
         if refresh:
             fformat = ('updated', 'Updated', '')
         else:
@@ -197,7 +198,7 @@ class TelegramAccount:
             ext = '' if filename.endswith('.png') else '.png'
             encoded_backup_data = urlsafe_b64encode(backup_data).decode()
             makeqrcode(encoded_backup_data).save(filename + ext)
-            
+
             self.TelegramClient.send_file(
                 'me', open(filename + '.png','rb'),
                 caption=self.__notify.format(
@@ -216,18 +217,18 @@ class TelegramAccount:
             'me', f'Hello! Please, update your backup `{filename}`.\n\n**One week left!!**',
             schedule=timedelta(seconds=BACKUP_DEATH_IN-604800)
         )
-        return filename
+        return (filename, backup_dict)
 
 def restore(
-        tgback_file_path: str, 
-        password: bytes, 
+        tgback_file_path: str,
+        password: bytes,
         is_qr: bool=False) -> dict:
 
     if is_qr:
         backup_data = scanqrcode(tgback_file_path)
     else:
         backup_data = open(tgback_file_path,'rb').read()
-    
+
     backup_salt = backup_data[:32]
     backup_iv = backup_data[32:48]
 
@@ -237,11 +238,11 @@ def restore(
     return pickle_loads(backup_data)
 
 def makeqrcode(data: str):
-    # There is problem with scanqrcode, it can't 
+    # There is problem with scanqrcode, it can't
     # scan QR codes if they `not len(text) % 100`
-    while len(data) % 100: 
-        data += ' ' 
-    return make_qr(data)                   
+    while len(data) % 100:
+        data += ' '
+    return make_qr(data)
 
 def scanqrcode(qrcode_path: str) -> bytes:
     decoded = pyzbar.decode(Image.open(qrcode_path))[0].data
