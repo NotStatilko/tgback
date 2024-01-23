@@ -19,7 +19,7 @@ tools_source = open(TOOLS, encoding='utf-8').read()
 # TGBACK without this because it's package
 edited_script_source = main_script_source.replace(
     'from .tools import', 'from tgback.tools import')
-edited_script_source = main_script_source.replace(
+edited_script_source = edited_script_source.replace(
     'from .version import', 'from tgback.version import')
 edited_tools_source = tools_source.replace(
     'from .version import', 'from tgback.version import')
