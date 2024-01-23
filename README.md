@@ -7,7 +7,8 @@
 
  ## Download & Install
  ### Windows
- You can download builds from the official [TGBACK Telegram channel](https://t.me/nontgback).
+ You can download builds from the [Releases](https://github.com/NotStatilko/tgback/releases) or from official [TGBACK Channel](https://t.me/nontgback).
+
  ### Linux and making Windows executable
   If you want to make a **TelegramBackup** app then you need to install all dependencies. For the program to work correctly, you need to have [Python 3.7+](https://python.org), [ZBar](http://zbar.sourceforge.net) (for QR features, you may ignore it) and [pip](https://pypi.org/project/pip/) (it can be already installed with Python 3.7+, type `pip` or `pip3` in your terminal/cmd). After that, run:
   ```bash
