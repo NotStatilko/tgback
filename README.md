@@ -1,13 +1,13 @@
-# TelegramBackup v5.0
+# TelegramBackup v5.1
 ######  _Don't forget to look at [changelog](CHANGELOG.md)!_
 
 **TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram you will be **not able** to log into your account if you lose access to the phone number (SIM card). **TGBACK** provides the ability to create an _alternative session_ (as if you were logging in from another device) and get login code or change the number on which the account is linked.
 
-**TelegramBackup** produces a special `.tgback` file as well as a QR code - both are your backup. You can choose what is more convenient for you to store, as `.tgback` and a QR code represent **the same** session. For encryption of backups, **AES-256-CBC** is used with a [scrypt](https://en.wikipedia.org/wiki/Scrypt) key. 
+**TelegramBackup** produces a special `.tgback` file as well as a QR code - both are your backup. You can choose what is more convenient for you to store, as `.tgback` and a QR code represent **the same** session. For encryption of backups, **AES-256-CBC** is used with a [scrypt](https://en.wikipedia.org/wiki/Scrypt) key.
 
  ## Download & Install
  ### Windows
- You can download builds from the official [TGBACK Telegram channel](https://t.me/nontgback). 
+ You can download builds from the official [TGBACK Telegram channel](https://t.me/nontgback).
  ### Linux and making Windows executable
   If you want to make a **TelegramBackup** app then you need to install all dependencies. For the program to work correctly, you need to have [Python 3.7+](https://python.org), [ZBar](http://zbar.sourceforge.net) (for QR features, you may ignore it) and [pip](https://pypi.org/project/pip/) (it can be already installed with Python 3.7+, type `pip` or `pip3` in your terminal/cmd). After that, run:
   ```bash
