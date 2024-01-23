@@ -8,6 +8,11 @@ except ImportError:
 
 QR_ERROR = IndexError if not QR_AVAILABLE else UnidentifiedImageError
 
+try:
+    from sys import _MEIPASS
+except ImportError:
+    _MEIPASS = None
+
 from base64 import (
     urlsafe_b64encode, urlsafe_b64decode
 )
@@ -21,8 +26,8 @@ from pickle import (
     loads as pickle_loads,
     dumps as pickle_dumps
 )
+from pathlib import Path
 from itertools import cycle
-from os.path import split as path_split
 
 from telethon.sync import TelegramClient
 from telethon.tl.types import CodeSettings
@@ -41,10 +46,15 @@ from pyaes.util import append_PKCS7_padding, strip_PKCS7_padding
 
 from .version import VERSION
 
+
+ABSPATH: Path = Path(_MEIPASS) if _MEIPASS is not None \
+    else Path(__file__).parent
+
 TelegramClient.__version__ = VERSION
 
 # Three months by default
 BACKUP_DEATH_IN = 8_040_000
+
 
 def make_scrypt_key(
         password: bytes,

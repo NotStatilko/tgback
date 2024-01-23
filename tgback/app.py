@@ -2,9 +2,9 @@
 
 print('\n' * 100 + '@ TGBACK is loading...')
 
-import os.path
-
+from pathlib import Path
 from sys import platform
+
 from getpass import getpass
 from traceback import print_exc
 from os import system as os_system
@@ -27,8 +27,8 @@ from telethon.tl.types import InputPhoneContact
 from telethon.utils import logging
 
 from .tools import (
-    QR_ERROR, scanqrcode,
-    restore, QR_AVAILABLE,
+    QR_ERROR, scanqrcode, restore,
+    QR_AVAILABLE, ABSPATH,
     TelegramAccount, make_scrypt_key
 )
 from .version import VERSION
@@ -113,7 +113,7 @@ def app():
         clsprint(
            f''' - TGBACK v{VERSION} (bit.ly/tgback) -\n\n'''
 
-            '''> 0) Quick help & What it is?\n'''
+            '''> 0) Quick help & What It Is?\n'''
             '''>> 1) Backup Telegram account\n'''
             '''>>> 2) Open TGBACK backup file\n'''
             '''>>>> 3) Exit from TelegramBackup'''
@@ -127,59 +127,8 @@ def app():
 
     while True:
         if selected_section == '0':
-            clsprint(
-                '''  The TGBACK (a.k.a) TelegramBackup is a simple CMD app\n'''
-                '''  that was created in response to the strange Telegram\n'''
-                '''  behaviour: to sign-in your account you *should* have\n'''
-                '''  an access to a phone number (SIM card) it linked. If you\n'''
-                '''  will lost your SIM, then you lost your Telegram account.\n\n'''
-
-                '''  This (seems to me a) problem can be fixed in a three ways:\n'''
-                '''      1. You can make an extra log-in on your other device\n'''
-                '''      2. You can backup TelegramDesktop's TDATA folder (Google it)\n'''
-                '''      3. You can use TGBACK, and it will save & encrypt session\n\n'''
-
-                '''  If any session (device logged-in) is linked to your account, then\n'''
-                '''  you will receive a login code from official Telegram userbot, so\n'''
-                '''  this can help to omit this "problem", if it\'s enough for you -- good!\n'''
-                '''  Don't use TGBACK! But if you don\'t have second device, we can help you!\n\n'''
-
-                '''  In short, this app will sign-in to your account as new session (see\n'''
-                '''  Settings -> Devices in Telegram if you don\'t understand what it is)\n'''
-                '''  and will, again, save and encrypt necesarry data of itself [session] to file,\n'''
-                '''  so you can use it later to change phone number linked to your account or\n'''
-                '''  retrieve last messages from the Telegram userbot, so you can receive a code.\n\n'''
-
-                '''  After backup creation you will receive a *.tgback file and an image with QR code,\n'''
-                '''  both encapsulates an identical data in encrypted form, so you can save any.\n\n'''
-
-                '''  You will need to *refresh it* every three months, so Telegram will not disconnect it\n'''
-                '''  due the inactivity. One of Telegram update showed that this limit, probably, can\n'''
-                '''  be extended up to five-six months, but i don\'t want to risk of a peoples data, so 3.\n\n'''
-
-                '''!!! WARNING !!!\n\n'''
-
-                '''  We will save a data that is enough to gain A FULL ACCESS TO YOUR TELEGRAM ACCOUNT!!\n\n'''
-                '''  While the developer DOESN'T transfer any of your private data (sources: bit.ly/tgback)\n'''
-                '''  the other "bad guys" can make an app from codebase that will make an awful things.\n\n'''
-                '''  Please note that connected TGBACK session SHOULDN'T be active/online from time you\n'''
-                '''  refreshed it. If you found some suspicious activity then IMMEDIATELY disconnect it!\n'''
-                '''  This can be easily done via TGBACK/Telegram(Settings->Devices->Select TGBACK->Disconnect)\n\n'''
-
-                '''  Please, get the .EXE file or build ONLY from the official sources: \n'''
-                '''      1. https://github.com/NotStatilko/tgback\n'''
-                '''      2. https://t.me/nontgback (dev. channel)\n\n'''
-
-                '''  Use STRONG passwords. This app programmed in a way that for any password generation\n'''
-                '''  attempt you will need to give a 1GB of RAM for about a second-two, so it's VERY hard to\n'''
-                '''  bruteforce, but still not impossible. An author ISN'T a professional crypto-man, so be\n'''
-                '''  careful. If you\'re aware what is AES / Scrypt and have a time, - then, please, check sources\n'''
-                '''  and write me (t.me/not_statilko, or email: thenonproton@pm.me) if you found any vulnerability.\n\n'''
-
-                '''  There wasn't any security-related reports up to this day. Just use TGBACK correctly.\n\n'''
-
-                '''** Regards. Don't trust, verify. 2019-2022, Non.'''
-            )
+            help_text = open(ABSPATH / 'data' / 'help.txt')
+            clsprint(help_text.read())
             input('\n@ Press Enter to return ')
 
         if selected_section == '1':
@@ -269,11 +218,11 @@ def app():
                     clsprint()
                     config = input('> Path to tgback-config file: ')
 
-                    if not os.path.exists(config):
+                    if not Path(config).exists():
                         clsprint()
                         input('@: ! Can\'t open config file. Check your path. ')
 
-                    elif os.path.isdir(config):
+                    elif Path(config).is_dir():
                         clsprint()
                         input('@: ! Specified path is a directory, not a file. ')
                     else:
@@ -377,12 +326,12 @@ def app():
             is_qr = True if open_mode == '1' else False
             path_to_tgback = input(f'> Path to .tgback {backup_type}: ')
 
-            if not os.path.exists(path_to_tgback):
+            if not Path(path_to_tgback).exists():
                 clsprint()
                 input(f'@: ! Can\'t find .tgback {backup_type}. Check entered path.')
                 raise FlushToStartPage
 
-            elif os.path.isdir(path_to_tgback):
+            elif Path(path_to_tgback).is_dir():
                 clsprint()
                 input('@: ! Specified path is a directory, not a file. ')
                 raise FlushToStartPage

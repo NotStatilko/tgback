@@ -1,0 +1,72 @@
+  The TGBACK (a.k.a) TelegramBackup is a simple CMD app
+  that was created in response to the strange Telegram
+  behaviour: to sign-in your account you *should* have
+  an access to a phone number (SIM card) it linked. If you
+  will lost your SIM, then you lost your Telegram account.
+
+  This (seems to me a) problem can be fixed in a three ways:
+      1. You can make an extra log-in on your other device
+      2. You can backup TelegramDesktop's TDATA folder (Google it)
+      3. You can use TGBACK, and it will save & encrypt session
+
+  If any session (device logged-in) is linked to your
+  account, then you will receive a login code from the
+  official Telegram userbot. If you have Telegram on
+  more than one device, then you don't need TGBACK.
+
+  [HOW IT WORKS]
+
+  In short, this app will sign-in to your account as
+  new device (see Settings -> Devices in Telegram
+  if you don't understand what it is) and will save
+  session in encrypted (by your password) form to
+  file with a '.tgback' extension. You can use it
+  later to change phone number linked to your account
+  or get last messages from the Telegram userbot, so
+  you can receive a login code and enter your Telegram.
+
+  In addition to the encrypted '.tgback' file you will
+  receive QR code with the same encrypted session if
+  QR features was installed during the TGBACK built. You
+  can save either QR or '.tgback' file, or even both.
+
+  You will need to *refresh your backup* every three
+  months, so Telegram will not disconnect it due
+  inactivity. In fact, this should be determined by
+  the 'If inactive for...' under the 'Terminate old
+  sessions' setting in Telegram. However, i code it
+  in a way that you will get reminder every three
+  months. I believe this is a safe trade-off.
+
+!!! WARNING !!!
+
+  We will save data that is enough to gain
+  A FULL ACCESS TO YOUR TELEGRAM ACCOUNT!!
+
+  While the developer DOESN'T transfer any of your
+  private data (sources: bit.ly/tgback) other people
+  can make app from codebase that will do bad things.
+
+  Please note that connected TGBACK session SHOULDN'T
+  be active/online from time you refreshed it. If you
+  found some suspicious activity then IMMEDIATELY
+  disconnect it!! This can be easily done via TGBACK/Telegram
+  (Settings->Devices->Select TGBACK Session->Disconnect)
+
+  Get the .EXE files or build ONLY from official sources:
+      1. https://github.com/NotStatilko/tgback
+      2. https://t.me/nontgback (dev. channel)
+
+  Use STRONG passwords. This app programmed in a way
+  that for any password generation attempt you will
+  need to give a 1GB of RAM for about a second-two,
+  so it's VERY hard to bruteforce, but still possible.
+  An author ISN'T a professional crypto-man, so be
+  careful. If YOU found ANY vulnerability then please
+  CONTACT ME on GitHub OR message thenonproton@pm.me
+
+  There wasn't any security-related reports up to
+  this day. Use TGBACK wisely.
+
+
+ % by NotStatilko (also see NonProjects! :), 2024.
