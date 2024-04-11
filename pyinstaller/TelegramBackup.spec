@@ -9,23 +9,8 @@ TGBACK_FOLDER = Path.cwd().parent / 'tgback'
 DATA_FOLDER = TGBACK_FOLDER / 'data'
 
 SCRIPT_LOGO = Path.cwd() / 'tgback_logo.ico'
-MAIN_SCRIPT = TGBACK_FOLDER / 'app.py'
-TOOLS = TGBACK_FOLDER / 'tools.py'
+MAIN_SCRIPT = Path.cwd() / '.app_wrapper.py'
 
-main_script_source = open(MAIN_SCRIPT, encoding='utf-8').read()
-tools_source = open(TOOLS, encoding='utf-8').read()
-
-# Temporary change imports. PyInstaller can't built
-# TGBACK without this because it's package
-edited_script_source = main_script_source.replace(
-    'from .tools import', 'from tgback.tools import')
-edited_script_source = edited_script_source.replace(
-    'from .version import', 'from tgback.version import')
-edited_tools_source = tools_source.replace(
-    'from .version import', 'from tgback.version import')
-
-open(MAIN_SCRIPT, 'w', encoding='utf-8').write(edited_script_source)
-open(TOOLS, 'w', encoding='utf-8').write(edited_tools_source)
 
 PYINSTALLER_DATA: dict = {
     str(Path('data', i.name)): str(i)
@@ -77,6 +62,3 @@ exe = EXE(
     codesign_identity = None,
     entitlements_file = None
 )
-# Write original source code back to the files
-open(MAIN_SCRIPT, 'w', encoding='utf-8').write(main_script_source)
-open(TOOLS, 'w', encoding='utf-8').write(tools_source)
