@@ -18,7 +18,7 @@ PYINSTALLER_DATA: dict = {
 }
 a = Analysis(
     [str(MAIN_SCRIPT)],
-    pathex = [],
+    pathex = [TGBACK_FOLDER.parent],
     binaries = [
         (str(Path('dll', 'libiconv-2.dll')), '.'),
         (str(Path('dll', 'libzbar-32.dll')), '.'),
