@@ -12,6 +12,7 @@ from os import system as os_system
 from datetime import datetime
 from time import ctime, strftime, sleep
 
+from code import interact as interactive_console
 from pickle import UnpicklingError
 
 from telethon.errors.rpcerrorlist import (
@@ -122,10 +123,16 @@ def app():
         )
         selected_section = input('\n@ Input: ')
 
-        if selected_section and selected_section in '0123':
+        if selected_section and selected_section in '0123P':
             break
 
     while True:
+        if selected_section == 'P':
+            clsprint()
+            print('@ !!! WARNING !!! DO NOT EXECUTE CODE YOU DON\'T TRUST !!!\n')
+            interactive_console(local=globals())
+            raise FlushToStartPage
+
         if selected_section == '0':
             help_text = open(ABSPATH / 'data' / 'help.txt')
             clsprint(help_text.read())
