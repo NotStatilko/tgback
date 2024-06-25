@@ -32,8 +32,8 @@ setup(
     ],
     extras_require = {
         'QR': [
+            'pillow',
             'qrcode==6.1',
-            'pillow==9.0.1',
             'pyzbar==0.1.8'
         ]
     },
