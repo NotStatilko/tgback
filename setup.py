@@ -28,7 +28,7 @@ setup(
     ],
     install_requires = [
         'pyaes==1.6.1',
-        'telethon==1.24.0'
+        'telethon==1.36.0'
     ],
     extras_require = {
         'QR': [
