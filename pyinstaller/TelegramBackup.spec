@@ -1,9 +1,41 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from sys import maxsize
 from pathlib import Path
+
+from platform import system
+from importlib import resources
+
 
 if Path.cwd().name != 'pyinstaller':
     raise RuntimeError('You should build App inside the "pyinstaller" folder.')
+
+if system() == 'Windows':
+    try:
+        if hasattr(resources, 'files'): # Python 3.9+
+            if maxsize > 2**32: # 64bit
+                libiconv = resources.files('pyzbar') / 'libiconv.dll'
+                libzbar = resources.files('pyzbar') / 'libzbar-64.dll'
+            else: # 32bit
+                libiconv = resources.files('pyzbar') / 'libiconv-2.dll'
+                libzbar = resources.files('pyzbar') / 'libzbar-32.dll'
+        else:
+            if maxsize > 2**32: # 64bit
+                libiconv = resources.path('pyzbar', 'libiconv.dll').__enter__()
+                libzbar = resources.path('pyzbar', 'libzbar-64.dll').__enter__()
+            else: # 32bit
+                libiconv = resources.path('pyzbar', 'libiconv-2.dll').__enter__()
+                libzbar = resources.path('pyzbar', 'libzbar-32.dll').__enter__()
+
+        binaries = [(str(libiconv), '.'), (str(libzbar), '.')]
+    except ModuleNotFoundError:
+        print(
+            '!!! Could not find PyZbar package! '
+            'QR features will be NOT available!'
+        )
+        binaries = []
+else:
+    binaries = []
 
 TGBACK_FOLDER = Path.cwd().parent / 'tgback'
 DATA_FOLDER = TGBACK_FOLDER / 'data'
@@ -19,10 +51,7 @@ PYINSTALLER_DATA: dict = {
 a = Analysis(
     [str(MAIN_SCRIPT)],
     pathex = [TGBACK_FOLDER.parent],
-    binaries = [
-        (str(Path('dll', 'libiconv-2.dll')), '.'),
-        (str(Path('dll', 'libzbar-32.dll')), '.'),
-    ],
+    binaries = binaries,
     datas = [],
     hiddenimports = [],
     hookspath = [],
