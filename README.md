@@ -1,4 +1,4 @@
-# TelegramBackup v5.1
+# TelegramBackup v5.2.1
 ######  _Don't forget to look at [changelog](CHANGELOG.md)!_
 
 **TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram you will be **not able** to log into your account if you lose access to the phone number (SIM card). **TGBACK** provides the ability to create an _alternative session_ (as if you were logging in from another device) and get login code or change the number on which the account is linked.
@@ -10,7 +10,7 @@
  You can download builds from the [Releases](https://github.com/NotStatilko/tgback/releases) or from official [TGBACK Channel](https://t.me/nontgback).
 
  ### Linux and making Windows executable
-  If you want to make a **TelegramBackup** app then you need to install all dependencies. For the program to work correctly, you need to have [Python 3.7+](https://python.org), [ZBar](http://zbar.sourceforge.net) (for QR features, you may ignore it) and [pip](https://pypi.org/project/pip/) (it can be already installed with Python 3.7+, type `pip` or `pip3` in your terminal/cmd). After that, run:
+  If you want to make a **TelegramBackup** app then you need to install all dependencies. For the program to work correctly, you need to have [Python 3.7+](https://python.org) and [pip](https://pypi.org/project/pip/) (it can be already installed with Python 3.7+, type `pip` or `pip3` in your terminal/cmd). After that, run:
   ```bash
   # You can install TGBACK from PIP
   pip install tgback[QR] # Not a Pure-python, with QR
@@ -33,7 +33,7 @@
   ```
   pyinstaller TelegramBackup.spec
   ```
-  After making TelegramBackup executable check it if it works and after that you can remove all tgback-related stuff (ZBar [if you not on linux], Python, etc).
+  After making TelegramBackup executable check it if it works and after that you can remove all build related stuff like Python.
 
  #### Linux
  If you want to use tgback on Linux with QR-features then you will need to have a **libzbar0** (or analogue) onto your machine.
