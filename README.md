@@ -1,4 +1,7 @@
 # TelegramBackup v5.2.1
+
+**!!! This project is mostly legacy now. Check out improved and revisited version — [TgbackXQt](https://github.com/NotStatilko/tgback-x-qt) !!!**
+
 ######  _Don't forget to look at [changelog](CHANGELOG.md)!_
 
 **TelegramBackup** — console application created to backup Telegram accounts. Due to the features of Telegram you will be **not able** to log into your account if you lose access to the phone number (SIM card). **TGBACK** provides the ability to create an _alternative session_ (as if you were logging in from another device) and get login code or change the number on which the account is linked.
